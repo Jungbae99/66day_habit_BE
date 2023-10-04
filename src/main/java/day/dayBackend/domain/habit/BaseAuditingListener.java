@@ -20,9 +20,9 @@ public class BaseAuditingListener {
     @LastModifiedDate
     private LocalDateTime updateAt;
 
-    private LocalDateTime deleteAt = null;
+    private LocalDateTime deletedAt = null;
 
     protected void delete() {
-        deleteAt = LocalDateTime.now();
+        deletedAt = LocalDateTime.now();
     }
 }
