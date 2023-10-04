@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -36,15 +37,14 @@ public class Member extends BaseAuditingListener {
     private Certified certified;
 
     @OneToMany(mappedBy = "member")
-    private List<Habit> habitList;
+    private List<Habit> habitList = new ArrayList<>();
 
     @Builder
-    Member(String email, String password, String username, String introduction, String profileImage) {
+    Member(String email, String password, String username, String introduction) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.introduction = introduction;
-        this.profileImage = profileImage;
         this.certified = Certified.NOT_CERTIFIED;
     }
 

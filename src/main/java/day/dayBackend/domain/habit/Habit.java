@@ -1,5 +1,6 @@
 package day.dayBackend.domain.habit;
 
+import day.dayBackend.domain.Likes;
 import day.dayBackend.domain.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -42,6 +43,8 @@ public class Habit extends BaseAuditingListener {
     @OneToMany(mappedBy = "habit", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HabitRecord> habitRecords = new ArrayList<>();
 
+    @OneToMany(mappedBy = "habit")
+    private List<Likes> likes = new ArrayList<>();
 
     @Builder
     Habit(Member member, String habitName, BackGroundColor backGroundColor, FontColor fontColor, HabitVisibility habitVisibility, List<HabitTag> habitTag) {

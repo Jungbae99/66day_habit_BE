@@ -13,14 +13,14 @@ public class HabitRecord {
     private Long id;
 
     private int dayNumber;
-    private int value;
+    private int achievementRate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "habit_id")
     private Habit habit;
 
-    public HabitRecord(int dayNumber, int value) {
+    public HabitRecord(int dayNumber, int achievementRate) {
         this.dayNumber = dayNumber;
-        this.value = value;
+        this.achievementRate = achievementRate;
     }
 }
