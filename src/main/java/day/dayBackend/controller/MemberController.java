@@ -1,8 +1,11 @@
 package day.dayBackend.controller;
 
 import day.dayBackend.dto.request.MemberDirectCreateRequestDto;
+import day.dayBackend.dto.request.MemberUpdateRequestDto;
 import day.dayBackend.dto.response.CommonResponseDto;
+import day.dayBackend.dto.response.MemberDetailResponseDto;
 import day.dayBackend.dto.response.MemberResponseDto;
+import day.dayBackend.dto.response.MemberUpdateResponseDto;
 import day.dayBackend.service.MemberService;
 import day.dayBackend.service.SignInService;
 import jakarta.validation.Valid;
@@ -44,11 +47,34 @@ public class MemberController {
 
 
     /**
-     * 내 정보 보기
+     * 메인페이지 회원정보 보기
      */
-    public CommonResponseDto<MemberResponseDto> getMyInfoV1() {
+    @GetMapping("")
+    public CommonResponseDto<MemberResponseDto> getMyInfoV1(@RequestParam(value = "id") Long id) {
+        //:TODO ContextHolder 에서 PK 꺼내는 것으로 변경
         return CommonResponseDto.<MemberResponseDto>builder()
-                // :TODO 
+                .data(memberService.getMemberById(id))
+                .build();
+    }
+
+    /**
+     * 회원정보 상세 보기
+     */
+    @GetMapping("/detail")
+    public CommonResponseDto<MemberDetailResponseDto> getMyDetailInfoV1 (@RequestParam(value = "id") Long id) {
+        //:TODO ContextHolder 에서 PK 꺼내는 것으로 변경
+        return CommonResponseDto.<MemberDetailResponseDto>builder()
+                .data(memberService.getMemberDetailById(id))
+                .build();
+    }
+
+    /**
+     * 회원정보 수정
+     */
+    @PatchMapping("")
+    public CommonResponseDto<MemberUpdateResponseDto> updateMyInfoV1(@RequestBody final MemberUpdateRequestDto dto, @RequestParam(value = "id") Long id) {
+        return CommonResponseDto.<MemberUpdateResponseDto>builder()
+                .data(memberService.updateMember(id, dto))
                 .build();
     }
 
