@@ -29,7 +29,9 @@ public class Member extends BaseAuditingListener {
 
     private String introduction;
 
-    private String profileImage;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "profile_image_id")
+    private Upload profileImage;
 
     private String refreshToken;
 
@@ -46,6 +48,26 @@ public class Member extends BaseAuditingListener {
         this.username = username;
         this.introduction = introduction;
         this.certified = Certified.NOT_CERTIFIED;
+    }
+
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void updateUsername(String username) {
+        this.username = username;
+    }
+
+    public void updateProfileImage(Upload profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public void updateIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 
     public void delete() {
