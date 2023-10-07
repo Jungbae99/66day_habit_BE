@@ -62,4 +62,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponseDto> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ErrorResponseDto.builder()
+                        .status(HttpStatus.BAD_REQUEST.toString())
+                        .message("INVALID PARAMETER")
+                        .debugMessage(ex.getMessage())
+                        .build());
+    }
+
 }
