@@ -2,15 +2,12 @@ package day.dayBackend.service;
 
 
 import day.dayBackend.domain.Member;
-import day.dayBackend.dto.request.MemberDirectCreateRequestDto;
+import day.dayBackend.dto.request.member.MemberDirectCreateRequestDto;
 import day.dayBackend.repository.MemberRepository;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 @Service
 @RequiredArgsConstructor

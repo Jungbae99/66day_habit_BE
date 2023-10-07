@@ -1,4 +1,4 @@
-package day.dayBackend.dto.request;
+package day.dayBackend.dto.request.member;
 
 import day.dayBackend.domain.Upload;
 import lombok.Getter;

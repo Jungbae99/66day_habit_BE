@@ -1,4 +1,4 @@
-package day.dayBackend.dto.request;
+package day.dayBackend.dto.request.member;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,7 +11,7 @@ public class MemberDirectCreateRequestDto {
 
 //  :TODO
     @Email(message = "{validation.Pattern.email}")
-    @NotNull(message = "{validation.NotNull}")
+    @NotBlank(message = "{validation.NotBlank}")
     private String email;
 
 //    @NotNull(message = "{validation.NotNull}")
