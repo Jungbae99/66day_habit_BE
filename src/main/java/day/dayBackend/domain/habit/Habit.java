@@ -1,5 +1,6 @@
 package day.dayBackend.domain.habit;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import day.dayBackend.domain.Likes;
 import day.dayBackend.domain.Member;
 import jakarta.persistence.*;
@@ -22,12 +23,13 @@ public class Habit extends BaseAuditingListener {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @JsonIgnore
     private Member member;
 
     private String habitName;
 
     @Enumerated(EnumType.STRING)
-    private BackGroundColor backGroundColor;
+    private BackgroundColor backgroundColor;
 
     @Enumerated(EnumType.STRING)
     private FontColor fontColor;
@@ -35,8 +37,10 @@ public class Habit extends BaseAuditingListener {
     @Enumerated(EnumType.STRING)
     private HabitVisibility habitVisibility;
 
-    @OneToMany(mappedBy = "habit")
-    private List<HabitTag> habitTag = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(name = "habit_tags", joinColumns = @JoinColumn(name = "habit_id"))
+    @Column(name = "tag_name")
+    private List<String> habitTags = new ArrayList<>();
 
     private int progress;
 
@@ -47,15 +51,43 @@ public class Habit extends BaseAuditingListener {
     private List<Likes> likes = new ArrayList<>();
 
     @Builder
-    Habit(Member member, String habitName, BackGroundColor backGroundColor, FontColor fontColor, HabitVisibility habitVisibility, List<HabitTag> habitTag) {
+    Habit(Member member, String habitName, BackgroundColor backgroundColor, FontColor fontColor, HabitVisibility habitVisibility, List<String> habitTag) {
         this.member = member;
         this.habitName = habitName;
-        this.backGroundColor = backGroundColor;
+        this.backgroundColor = backgroundColor;
         this.fontColor = fontColor;
         this.habitVisibility = habitVisibility;
         this.progress = 0;
         if (habitTag != null) {
-            this.habitTag.addAll(habitTag);
+            this.habitTags.addAll(habitTag);
         }
+    }
+
+    public void updateHabitName(String habitName) {
+        this.habitName = habitName;
+    }
+
+    public void updateFontColor(String fontColor) {
+        this.fontColor = FontColor.valueOf(fontColor);
+    }
+
+
+    public void updateBackgroundColor(String backgroundColor) {
+        this.backgroundColor = BackgroundColor.valueOf(backgroundColor);
+    }
+
+    public void updateHabitVisibility(String visibility) {
+        this.habitVisibility = HabitVisibility.valueOf(visibility);
+    }
+
+
+    public void updateHabitTag(List<String> habitTags) {
+        this.habitTags.clear();
+        this.habitTags.addAll(habitTags);
+    }
+
+    public void delete() {
+        habitTags.clear();
+        super.delete();
     }
 }

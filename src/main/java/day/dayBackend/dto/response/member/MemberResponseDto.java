@@ -1,4 +1,4 @@
-package day.dayBackend.dto.response;
+package day.dayBackend.dto.response.member;
 
 import day.dayBackend.domain.Member;
 import day.dayBackend.domain.habit.Habit;
