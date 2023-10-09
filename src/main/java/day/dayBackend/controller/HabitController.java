@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/habit")
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
+
 public class HabitController {
 
     private final HabitService habitService;
