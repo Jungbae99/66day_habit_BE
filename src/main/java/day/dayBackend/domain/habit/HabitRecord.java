@@ -5,7 +5,7 @@ import lombok.*;
 
 @Getter
 @Entity
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HabitRecord {
 
     @Id
@@ -19,8 +19,10 @@ public class HabitRecord {
     @JoinColumn(name = "habit_id")
     private Habit habit;
 
-    public HabitRecord(int dayNumber, int achievementRate) {
+    @Builder
+    public HabitRecord(int dayNumber, int achievementRate, Habit habit) {
         this.dayNumber = dayNumber;
         this.achievementRate = achievementRate;
+        this.habit = habit;
     }
 }

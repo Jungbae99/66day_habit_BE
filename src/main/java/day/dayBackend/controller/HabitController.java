@@ -43,11 +43,6 @@ public class HabitController {
 
     /**
      * 습관 삭제
-     * @DeleteMapping("")
-     *     public CommonResponseDto resignV1(@RequestParam(value = "id") Long id, @RequestBody final MemberDeleteRequestDto dto) {
-     *         memberService.resign(id, dto);
-     *         return CommonResponseDto.builder().build();
-     *     }
      */
     @DeleteMapping("/{habitId}")
     public CommonResponseDto deleteHabitV1(@PathVariable(name = "habitId") Long habitId) {

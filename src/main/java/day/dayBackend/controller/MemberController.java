@@ -44,7 +44,6 @@ public class MemberController {
      */
     @GetMapping("/email")
     public CommonResponseDto emailDuplicationCheckV1(@Valid @RequestParam(value = "email") @Email(message = "{validation.Pattern.email}") String email) {
-        System.out.println("email = " + email);
         signInService.emailDuplicationCheck(email);
         return CommonResponseDto.builder().build();
     }
