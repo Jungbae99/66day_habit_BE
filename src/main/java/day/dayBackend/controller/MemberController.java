@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
 @Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/member")
-@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
+
 
 public class MemberController {
 
