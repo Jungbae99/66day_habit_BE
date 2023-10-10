@@ -1,8 +1,10 @@
 package day.dayBackend.controller;
 
 import day.dayBackend.dto.request.habit.HabitRecordRequestDto;
+import day.dayBackend.dto.request.habit.HabitRecordUpdateRequestDto;
 import day.dayBackend.dto.response.habit.HabitRecordResponseDto;
 import day.dayBackend.dto.response.CommonResponseDto;
+import day.dayBackend.dto.response.habit.HabitRecordUpdateResponseDto;
 import day.dayBackend.service.HabitRecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -32,10 +34,33 @@ public class HabitRecordController {
      * 습관 기록 등록
      */
     @PostMapping("/{habitId}")
-    public CommonResponseDto<Map<String, Integer>> createHabitRecord(@PathVariable(name = "habitId") Long habitId,
+    public CommonResponseDto<Map<String, Integer>> createHabitRecordV1(@PathVariable(name = "habitId") Long habitId,
                                                                       @RequestBody HabitRecordRequestDto dto) {
         return CommonResponseDto.<Map<String, Integer>>builder()
                 .data(Map.of("dayNumber", habitRecordService.createHabitRecord(habitId, dto)))
+                .build();
+    }
+
+    /**
+     * 습관 기록 수정
+     */
+    @PutMapping("/{habitId}")
+    public CommonResponseDto<HabitRecordUpdateResponseDto> updateHabitRecordV1(@PathVariable(name = "habitId") Long habitId,
+                                                                               @RequestParam(value = "dayNumber") Integer dayNumber,
+                                                                               @RequestBody HabitRecordUpdateRequestDto dto) {
+        return CommonResponseDto.<HabitRecordUpdateResponseDto>builder()
+                .data(habitRecordService.updateRecordV1(habitId, dayNumber, dto))
+                .build();
+    }
+
+    /**
+     * 습관 기록 삭제
+     */
+    @DeleteMapping("/{habitId}")
+    public CommonResponseDto<Map<String, Integer>> deleteHabitRecordV1(@PathVariable(name = "habitId") Long habitId,
+                                                                     @RequestParam(value = "dayNumber") Integer dayNumber) {
+        return CommonResponseDto.<Map<String, Integer>>builder()
+                .data(Map.of("dayNumber", habitRecordService.deleteHabitRecord(habitId, dayNumber)))
                 .build();
     }
 }
