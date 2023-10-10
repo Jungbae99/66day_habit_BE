@@ -25,4 +25,12 @@ public class HabitRecord {
         this.achievementRate = achievementRate;
         this.habit = habit;
     }
+
+    public void updateAchievement(int achievementRate) {
+        this.achievementRate = achievementRate;
+    }
+
+    public void delete() {
+        this.achievementRate = 0;
+    }
 }
