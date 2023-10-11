@@ -1,6 +1,7 @@
 spring:
   config:
     import:
+      - classpath:./config/secret-local.yml
 
   h2:
     console:
