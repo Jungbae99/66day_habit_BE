@@ -1,5 +1,6 @@
 package day.dayBackend.domain;
 
+import day.dayBackend.domain.authority.MemberAuthority;
 import day.dayBackend.domain.habit.BaseAuditingListener;
 import day.dayBackend.domain.habit.Habit;
 import jakarta.persistence.*;
@@ -41,13 +42,17 @@ public class Member extends BaseAuditingListener {
     @OneToMany(mappedBy = "member")
     private List<Habit> habitList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member")
+    private List<MemberAuthority> memberAuthorities = new ArrayList<>();
+
     @Builder
     Member(String email, String password, String username, String introduction) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.introduction = introduction;
-        this.certified = Certified.NOT_CERTIFIED;
+        // :TODO email 구현 시 변경
+        this.certified = Certified.CERTIFIED;
     }
 
     public void updateEmail(String email) {
@@ -72,5 +77,9 @@ public class Member extends BaseAuditingListener {
 
     public void delete() {
         super.delete();
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }
