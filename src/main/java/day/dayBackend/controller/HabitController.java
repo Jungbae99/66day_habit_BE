@@ -1,9 +1,11 @@
 package day.dayBackend.controller;
 
+import day.dayBackend.config.SecurityUtil;
 import day.dayBackend.dto.request.habit.HabitCreateRequestDto;
 import day.dayBackend.dto.request.habit.HabitUpdateRequestDto;
 import day.dayBackend.dto.response.CommonResponseDto;
 import day.dayBackend.dto.response.habit.HabitUpdateResponseDto;
+import day.dayBackend.exception.NotAuthenticatedException;
 import day.dayBackend.service.HabitService;
 import day.dayBackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +28,10 @@ public class HabitController {
      * 습관 생성
      */
     @PostMapping("")
-    public CommonResponseDto<Map<String, Long>> createHabitV1(@RequestBody final HabitCreateRequestDto dto, @RequestParam(value = "id") Long id) {
-        // :TODO Security member PK 검증
+    public CommonResponseDto<Map<String, Long>> createHabitV1(@RequestBody final HabitCreateRequestDto dto) {
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
-                .data(Map.of("habitId", habitService.createHabit(id, dto)))
+                .data(Map.of("habitId", habitService.createHabit(memberId, dto)))
                 .build();
     }
 
@@ -38,9 +40,10 @@ public class HabitController {
      */
     @PatchMapping("/{habitId}")
     public CommonResponseDto<HabitUpdateResponseDto> updateHabitV1(@RequestBody final HabitUpdateRequestDto dto, @PathVariable(name = "habitId") Long habitId) {
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
+
         return CommonResponseDto.<HabitUpdateResponseDto>builder()
-                // :TODO Security PK 꺼내서 수정권한을 추가하자. (memberId 도 넘기자)
-                .data(habitService.updateHabit(habitId, dto))
+                .data(habitService.updateHabit(memberId, habitId, dto))
                 .build();
     }
 
@@ -49,9 +52,9 @@ public class HabitController {
      */
     @DeleteMapping("/{habitId}")
     public CommonResponseDto deleteHabitV1(@PathVariable(name = "habitId") Long habitId) {
-        // :TODO Security PK 꺼내서 수정권한을 추가하자.
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
-                .data(Map.of("habitId", habitService.deleteHabit(habitId)))
+                .data(Map.of("habitId", habitService.deleteHabit(memberId, habitId)))
                 .build();
     }
 
