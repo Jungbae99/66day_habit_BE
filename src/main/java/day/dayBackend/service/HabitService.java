@@ -13,6 +13,7 @@ import day.dayBackend.repository.HabitRepository;
 import day.dayBackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,10 +53,14 @@ public class HabitService {
      * 습관 수정
      */
     @Transactional
-    public HabitUpdateResponseDto updateHabit(Long id, HabitUpdateRequestDto dto) {
+    public HabitUpdateResponseDto updateHabit(Long memberId, Long habitId, HabitUpdateRequestDto dto) {
 
-        Habit habit = habitRepository.findByIdAndDeletedAtNull(id)
+        Habit habit = habitRepository.findByIdAndDeletedAtNull(habitId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 습관을 찾을 수 없습니다."));
+
+        if (!habit.getMember().getId().equals(memberId)) {
+            throw new AccessDeniedException("수정할 권한이 없습니다.");
+        }
 
         if (dto.getHabitName().isPresent()) { validateHabitDuplication(dto.getHabitName().get()); habit.updateHabitName(dto.getHabitName().get()); }
         if (dto.getFontColor().isPresent()) { habit.updateFontColor(dto.getFontColor().get()); }
@@ -71,11 +76,14 @@ public class HabitService {
      * 습관 삭제
      */
     @Transactional
-    public Long deleteHabit(Long habitId) {
+    public Long deleteHabit(Long memberId, Long habitId) {
         Habit habit = habitRepository.findByIdAndDeletedAtNull(habitId)
                 .orElseThrow(() -> new NotFoundException("해당하는 습관이 존재하지 않습니다."));
-        
-        // member & habit 비교
+
+        if (!habit.getMember().getId().equals(memberId)) {
+            throw new AccessDeniedException("수정할 권한이 없습니다.");
+        }
+
         habit.delete();
         return habit.getId();
     }

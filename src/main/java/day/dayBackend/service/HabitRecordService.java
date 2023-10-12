@@ -42,8 +42,12 @@ public class HabitRecordService {
         Habit habit = habitRepository.findByIdAndDeletedAtNull(habitId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 습관을 찾을 수 없습니다."));
 
-        if (!checkRecordValidation(habitId, dto.getDayNumber())) {
+        if (!recordCheck(habitId, dto.getDayNumber())) {
             throw new IllegalArgumentException("습관 기록 생성이 허용되지 않습니다.");
+        }
+
+        if (habitRecordRepository.findByDayNumber(dto.getDayNumber()).isPresent()) {
+            throw new IllegalArgumentException("해당하는 습관 기록이 이미 존재합니다.");
         }
 
         HabitRecord habitRecord = HabitRecord.builder()
@@ -63,7 +67,7 @@ public class HabitRecordService {
     @Transactional
     public HabitRecordUpdateResponseDto updateRecordV1(Long habitId, Integer dayNumber, HabitRecordUpdateRequestDto dto) {
         HabitRecord habitRecord = habitRecordRepository.findByHabitId(habitId, dayNumber)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() -> new NotFoundException("해당하는 습관 기록이 존재하지 않습니다."));
 
         habitRecord.updateAchievement(dto.getAchievementRate());
         return HabitRecordUpdateResponseDto.fromEntity(habitRecord);
@@ -75,17 +79,24 @@ public class HabitRecordService {
     @Transactional
     public Integer deleteHabitRecord(Long habitId, Integer dayNumber) {
         HabitRecord habitRecord = habitRecordRepository.findByHabitId(habitId, dayNumber)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() -> new NotFoundException("해당하는 습관 기록이 존재하지 않습니다."));
 
         habitRecord.delete();
-
         return dayNumber;
+    }
+
+
+    /**
+     * 날짜 검증 로직 호출
+     */
+    public boolean recordCheck(Long habitId, int dayNumber) {
+        return checkRecordValidation(habitId, dayNumber);
     }
 
     /**
      * 날짜 검증 로직
      */
-    public boolean checkRecordValidation(Long habitId, int dayNumber) {
+    private boolean checkRecordValidation(Long habitId, int dayNumber) {
         Habit habit = habitRepository.findByIdAndDeletedAtNull(habitId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 습관을 찾을 수 없습니다."));
 
