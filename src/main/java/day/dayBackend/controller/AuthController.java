@@ -6,6 +6,10 @@ import day.dayBackend.dto.response.SignInResponseDto;
 import day.dayBackend.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
@@ -16,13 +20,16 @@ public class AuthController {
 
     private final AuthService authService;
 
-    /**
-     * 이메일 로그인
-     */
     @PostMapping("/signIn/direct")
-    public CommonResponseDto<SignInResponseDto> directSignInV1(@Valid @RequestBody final DirectSignInRequestDto dto) {
-        return CommonResponseDto.<SignInResponseDto>builder()
-                .data(authService.signIn(dto))
-                .build();
+    public ResponseEntity<CommonResponseDto<SignInResponseDto>> directSignInV1(@Valid @RequestBody final DirectSignInRequestDto dto) {
+        SignInResponseDto signInResponseDto = authService.signIn(dto);
+        String refToken = signInResponseDto.getResponseCookie().toString();
+        signInResponseDto.setResponseCookie(null);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, refToken)
+                .body(CommonResponseDto.<SignInResponseDto>builder()
+                        .data(signInResponseDto)
+                        .build());
     }
 }

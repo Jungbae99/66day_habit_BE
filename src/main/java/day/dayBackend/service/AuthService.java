@@ -11,6 +11,7 @@ import day.dayBackend.jwt.TokenProvider;
 import day.dayBackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -49,12 +50,13 @@ public class AuthService {
         if (member.getCertified() == Certified.NOT_CERTIFIED) {
             throw new AccessDeniedException("UNCERTIFIED");
         }
-        member.updateRefreshToken(tokenSet.getRefreshToken());
+        member.updateRefreshToken(tokenSet.getRefreshTokenCookie().getValue());
 
         return SignInResponseDto.builder()
                 .email(member.getEmail())
                 .username(member.getUsername())
-                .token(tokenSet)
+                .accessToken(tokenSet.getAccessToken())
+                .responseCookie(tokenSet.getRefreshTokenCookie())
                 .build();
     }
 
@@ -79,7 +81,7 @@ public class AuthService {
         }
 
         TokenDto tokenSet = createTokenSetByAuthentication(authentication);
-        member.updateRefreshToken(tokenSet.getRefreshToken());
+        member.updateRefreshToken(tokenSet.getRefreshTokenCookie().getValue());
         return tokenSet;
     }
 
@@ -104,7 +106,7 @@ public class AuthService {
     private TokenDto createTokenSetByAuthentication(Authentication authentication) {
         return TokenDto.builder()
                 .accessToken(tokenProvider.getAccessToken(authentication))
-                .refreshToken(tokenProvider.getRefreshToken(authentication))
+                .refreshTokenCookie(tokenProvider.getRefreshTokenCookie(authentication))
                 .build();
     }
 }
