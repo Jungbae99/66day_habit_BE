@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.SecurityException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -130,6 +131,31 @@ public class TokenProvider implements InitializingBean {
         return false;
     }
 
+
+    /**
+     * 쿠키 생성
+     */   
+    private ResponseCookie generateCookie(String name, String value, String path, boolean secure, String sameSite, long refreshTokenValidityTime) {
+        ResponseCookie cookie = ResponseCookie.from(name, value)
+                .path(path)
+                .maxAge(refreshTokenValidityTime)
+                .httpOnly(true)
+                .secure(secure)
+                .sameSite(sameSite)
+                .build();
+        return cookie;
+    }
+
+    /**
+     * refreshToken 담을 쿠키 생성
+     */
+    public ResponseCookie getRefreshTokenCookie(Authentication authentication) {
+
+        String refreshToken = getRefreshToken(authentication);
+        return generateCookie("jwtCookie", refreshToken, "/", true, "Lax", refreshTokenValidityTime);
+    }
+
+
     /**
      * 토큰 생성
      */
@@ -147,7 +173,7 @@ public class TokenProvider implements InitializingBean {
         if (claimIncluded) {
             Long userPK = null;
             if (authentication instanceof UsernamePasswordAuthenticationToken) {
-                userPK = ((CustomUser)authentication.getPrincipal()).getUserPK();
+                userPK = ((CustomUser) authentication.getPrincipal()).getUserPK();
             }
             builder.claim(AUTH_CLAIM_NAME, authorities)
                     .claim("memberId", userPK);
