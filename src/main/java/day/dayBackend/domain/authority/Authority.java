@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class Authority extends BaseAuditingListener {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String authorityName;

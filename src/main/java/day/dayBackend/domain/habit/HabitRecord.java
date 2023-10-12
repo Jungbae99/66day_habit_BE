@@ -9,7 +9,7 @@ import lombok.*;
 public class HabitRecord {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private int dayNumber;

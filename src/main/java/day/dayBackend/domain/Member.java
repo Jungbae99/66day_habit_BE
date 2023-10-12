@@ -18,7 +18,7 @@ import java.util.List;
 public class Member extends BaseAuditingListener {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)

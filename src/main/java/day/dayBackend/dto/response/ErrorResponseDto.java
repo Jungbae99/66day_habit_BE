@@ -22,6 +22,5 @@ public class ErrorResponseDto {
         this.status = status;
         this.message = message;
         this.debugMessage = debugMessage;
-        System.out.println("debug Message: " + debugMessage.toString());
     }
 }
