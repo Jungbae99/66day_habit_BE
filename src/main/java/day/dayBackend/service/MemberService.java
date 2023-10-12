@@ -1,6 +1,7 @@
 package day.dayBackend.service;
 
 import day.dayBackend.domain.Member;
+import day.dayBackend.domain.authority.MemberAuthority;
 import day.dayBackend.dto.request.member.MemberDeleteRequestDto;
 import day.dayBackend.dto.request.member.EmailUpdateRequestDto;
 import day.dayBackend.dto.request.member.MemberUpdateRequestDto;
@@ -10,9 +11,12 @@ import day.dayBackend.dto.response.member.MemberDetailResponseDto;
 import day.dayBackend.dto.response.member.MemberResponseDto;
 import day.dayBackend.dto.response.member.MemberUpdateResponseDto;
 import day.dayBackend.exception.NotFoundException;
+import day.dayBackend.repository.MemberAuthorityRepository;
 import day.dayBackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +28,8 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final UploadService uploadService;
+    private final PasswordEncoder passwordEncoder;
+    private final MemberAuthorityRepository memberAuthorityRepository;
 
     /**
      * 메인페이지 회원정보 조회
@@ -48,13 +54,10 @@ public class MemberService {
      */
     @Transactional
     public MemberUpdateResponseDto updateMember(Long id, MemberUpdateRequestDto dto) {
-        System.out.println("dto.getUsername() = " + dto.getUsername());
-        System.out.println("dto.getIntroduction() = " + dto.getIntroduction());
-//        System.out.println("dto.getProfileImage() = " + dto.getProfileImage());
 
         Member member = memberRepository.findByIdAndDeletedAtNull(id)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다"));
-//
+
         if (dto.getUsername().isPresent()) {
             member.updateUsername(dto.getUsername().get());
         }
@@ -92,9 +95,8 @@ public class MemberService {
     public void updatePassword(Long memberId, PasswordUpdateRequestDto dto) {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
-        //:TODO Encoder 사용
-        if (member.getPassword() != null && !member.getPassword().equals(dto.getCurrentPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        if (!passwordEncoder.matches(dto.getCurrentPassword(), member.getPassword())) {
+            throw new AccessDeniedException("비밀번호가 일치하지 않습니다.");
         }
         member.updatePassword(dto.getNewPassword());
     }
@@ -106,11 +108,14 @@ public class MemberService {
     public Long resign(Long memberId, MemberDeleteRequestDto dto) {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
-        // TODO: 권한삭제
-        if (member.getPassword() != null && !member.getPassword().equals(dto.getCheckPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+
+        if (!passwordEncoder.matches(dto.getCheckPassword(), member.getPassword())) {
+            throw new AccessDeniedException("비밀번호가 일치하지 않습니다.");
         }
+
         member.delete();
+        memberAuthorityRepository.findByMemberId(member.getId()).forEach(MemberAuthority::delete);
+
         return member.getId();
     }
 

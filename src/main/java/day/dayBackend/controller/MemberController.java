@@ -1,5 +1,6 @@
 package day.dayBackend.controller;
 
+import day.dayBackend.config.SecurityUtil;
 import day.dayBackend.dto.request.member.MemberDeleteRequestDto;
 import day.dayBackend.dto.request.member.PasswordUpdateRequestDto;
 import day.dayBackend.dto.request.member.EmailUpdateRequestDto;
@@ -10,6 +11,7 @@ import day.dayBackend.dto.response.member.EmailUpdateResponseDto;
 import day.dayBackend.dto.response.member.MemberDetailResponseDto;
 import day.dayBackend.dto.response.member.MemberResponseDto;
 import day.dayBackend.dto.response.member.MemberUpdateResponseDto;
+import day.dayBackend.exception.NotAuthenticatedException;
 import day.dayBackend.service.MemberService;
 import day.dayBackend.service.SignInService;
 import jakarta.validation.Valid;
@@ -56,10 +58,10 @@ public class MemberController {
      * 메인페이지 회원정보 보기
      */
     @GetMapping("")
-    public CommonResponseDto<MemberResponseDto> getMyInfoV1(@RequestParam(value = "id") Long id) {
-        //:TODO ContextHolder 에서 PK 꺼내는 것으로 변경
+    public CommonResponseDto<MemberResponseDto> getMyInfoV1() {
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<MemberResponseDto>builder()
-                .data(memberService.getMemberById(id))
+                .data(memberService.getMemberById(memberId))
                 .build();
     }
 
@@ -67,10 +69,10 @@ public class MemberController {
      * 회원정보 상세 보기
      */
     @GetMapping("/detail")
-    public CommonResponseDto<MemberDetailResponseDto> getMyDetailInfoV1(@RequestParam(value = "id") Long id) {
-        //:TODO ContextHolder 에서 PK 꺼내는 것으로 변경
+    public CommonResponseDto<MemberDetailResponseDto> getMyDetailInfoV1() {
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<MemberDetailResponseDto>builder()
-                .data(memberService.getMemberDetailById(id))
+                .data(memberService.getMemberDetailById(memberId))
                 .build();
     }
 
@@ -78,9 +80,10 @@ public class MemberController {
      * 회원정보 수정
      */
     @PatchMapping("")
-    public CommonResponseDto<MemberUpdateResponseDto> updateMyInfoV1(@Valid @RequestBody final MemberUpdateRequestDto dto, @RequestParam(value = "id") Long id) {
+    public CommonResponseDto<MemberUpdateResponseDto> updateMyInfoV1(@Valid @RequestBody final MemberUpdateRequestDto dto) {
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<MemberUpdateResponseDto>builder()
-                .data(memberService.updateMember(id, dto))
+                .data(memberService.updateMember(memberId, dto))
                 .build();
     }
 
@@ -88,9 +91,10 @@ public class MemberController {
      * 이메일 수정
      */
     @PutMapping("/email")
-    public CommonResponseDto<EmailUpdateResponseDto> updateEmailV1(@Valid @RequestBody final EmailUpdateRequestDto dto, @RequestParam(value = "id") Long id) {
+    public CommonResponseDto<EmailUpdateResponseDto> updateEmailV1(@Valid @RequestBody final EmailUpdateRequestDto dto) {
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<EmailUpdateResponseDto>builder()
-                .data(memberService.updateEmail(id, dto))
+                .data(memberService.updateEmail(memberId, dto))
                 .build();
     }
 
@@ -98,8 +102,9 @@ public class MemberController {
      * 비밀번호 수정
      */
     @PutMapping("/password")
-    public CommonResponseDto updatePasswordV1(@Valid @RequestBody final PasswordUpdateRequestDto dto, @RequestParam(value = "id") Long id) {
-        memberService.updatePassword(id, dto);
+    public CommonResponseDto updatePasswordV1(@Valid @RequestBody final PasswordUpdateRequestDto dto) {
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
+        memberService.updatePassword(memberId, dto);
         return CommonResponseDto.builder().build();
     }
 
@@ -107,8 +112,9 @@ public class MemberController {
      * 회원 탈퇴
      */
     @DeleteMapping("")
-    public CommonResponseDto resignV1(@RequestParam(value = "id") Long id, @RequestBody final MemberDeleteRequestDto dto) {
-        memberService.resign(id, dto);
+    public CommonResponseDto resignV1(@RequestBody final MemberDeleteRequestDto dto) {
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
+        memberService.resign(memberId, dto);
         return CommonResponseDto.builder().build();
     }
 

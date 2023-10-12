@@ -9,6 +9,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -70,6 +72,34 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                         .message("INVALID PARAMETER")
                         .debugMessage(ex.getMessage())
                         .build());
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    protected ResponseEntity<ErrorResponseDto> handleAuthenticationException(AuthenticationException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                ErrorResponseDto.builder()
+                        .status(HttpStatus.BAD_REQUEST.toString())
+                        .message("AUTHORIZATION REQUIRED")
+                        .debugMessage(ex.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    protected ResponseEntity<ErrorResponseDto> handleDataAccessException(AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorResponseDto.builder()
+                .status(HttpStatus.FORBIDDEN.toString())
+                .message("ACCESS DENIED")
+                .debugMessage(ex.getMessage())
+                .build());
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    protected ResponseEntity<ErrorResponseDto> handleNotFoundException(NotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponseDto.builder()
+                .status(HttpStatus.NOT_FOUND.toString())
+                .message("NO RESOURCE FOUND")
+                .debugMessage(ex.getMessage())
+                .build());
     }
 
 }
