@@ -41,3 +41,4 @@ out/
 **/src/main/resources/config/
 **/src/test/resources/config/
 **/src/main/generated/
+**/src/main/resources/*.p12
