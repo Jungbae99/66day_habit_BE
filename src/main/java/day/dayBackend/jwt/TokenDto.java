@@ -10,6 +10,10 @@ public class TokenDto {
     private String accessToken;
     private ResponseCookie refreshTokenCookie;
 
+    public void setRefreshTokenCookie(ResponseCookie refreshTokenCookie) {
+        this.refreshTokenCookie = refreshTokenCookie;
+    }
+
     @Builder
     public TokenDto(String accessToken, ResponseCookie refreshTokenCookie) {
         this.accessToken = accessToken;
