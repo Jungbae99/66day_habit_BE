@@ -1,7 +1,7 @@
 package day.dayBackend.domain.habit;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import day.dayBackend.domain.Likes;
+import day.dayBackend.domain.HabitLikes;
 import day.dayBackend.domain.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -48,7 +48,7 @@ public class Habit extends BaseAuditingListener {
     private List<HabitRecord> habitRecords = new ArrayList<>();
 
     @OneToMany(mappedBy = "habit")
-    private List<Likes> likes = new ArrayList<>();
+    private List<HabitLikes> likes = new ArrayList<>();
 
     @Builder
     Habit(Member member, String habitName, BackgroundColor backgroundColor, FontColor fontColor, HabitVisibility habitVisibility, List<String> habitTag) {
