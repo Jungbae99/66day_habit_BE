@@ -17,18 +17,17 @@ import day.dayBackend.service.SignInService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
+@CrossOrigin(origins = "https://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
 @Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/member")
-
-
 public class MemberController {
 
     private final MemberService memberService;
@@ -58,6 +57,7 @@ public class MemberController {
      * 메인페이지 회원정보 보기
      */
     @GetMapping("")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     public CommonResponseDto<MemberResponseDto> getMyInfoV1() {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<MemberResponseDto>builder()
@@ -69,6 +69,7 @@ public class MemberController {
      * 회원정보 상세 보기
      */
     @GetMapping("/detail")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     public CommonResponseDto<MemberDetailResponseDto> getMyDetailInfoV1() {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<MemberDetailResponseDto>builder()
@@ -80,6 +81,7 @@ public class MemberController {
      * 회원정보 수정
      */
     @PatchMapping("")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     public CommonResponseDto<MemberUpdateResponseDto> updateMyInfoV1(@Valid @RequestBody final MemberUpdateRequestDto dto) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<MemberUpdateResponseDto>builder()
@@ -91,6 +93,7 @@ public class MemberController {
      * 이메일 수정
      */
     @PutMapping("/email")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     public CommonResponseDto<EmailUpdateResponseDto> updateEmailV1(@Valid @RequestBody final EmailUpdateRequestDto dto) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<EmailUpdateResponseDto>builder()
@@ -102,6 +105,7 @@ public class MemberController {
      * 비밀번호 수정
      */
     @PutMapping("/password")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     public CommonResponseDto updatePasswordV1(@Valid @RequestBody final PasswordUpdateRequestDto dto) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         memberService.updatePassword(memberId, dto);
@@ -112,6 +116,7 @@ public class MemberController {
      * 회원 탈퇴
      */
     @DeleteMapping("")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     public CommonResponseDto resignV1(@RequestBody final MemberDeleteRequestDto dto) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         memberService.resign(memberId, dto);

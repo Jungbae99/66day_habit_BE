@@ -13,7 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
+@CrossOrigin(origins = "https://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/auth")

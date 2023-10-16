@@ -68,10 +68,11 @@ public class SecurityConfig {
 
                 // 회원가입
                 .requestMatchers(HttpMethod.POST, "/v1/member/direct").permitAll()
-                .requestMatchers(HttpMethod.POST, "/v1/member/oauth").permitAll()
 
                 // 이메일 중복확인
                 .requestMatchers(HttpMethod.GET, "/v1/member/email").permitAll()
+
+                .requestMatchers(HttpMethod.GET, "/v1/habit/famous/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
