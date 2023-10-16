@@ -13,5 +13,5 @@ INSERT INTO member (`created_at`, `certified`, `email`, `introduction`, `passwor
 insert into member_authority (`created_at`, `member_id`, `authority_id`) values (TIMESTAMP '2023-10-11 00:00:00.123456', 1, 1);
 insert into member_authority (`created_at`, `member_id`, `authority_id`) values (TIMESTAMP '2023-10-11 00:00:00.123456', 1, 2);
 insert into member_authority (`created_at`, `member_id`, `authority_id`) values (TIMESTAMP '2023-10-11 00:00:00.123456', 1, 3);
-insert into member_authority (`created_at`, `member_id`, `authority_id`) values (TIMESTAMP '2023-10-11 00:00:00.123456', 2, 1);
+insert into member_authority (`created_at`, `member_id`, `authority_id`) values (TIMESTAMP '2023-10-11 00:00:00.123456', 2, 3);
 
