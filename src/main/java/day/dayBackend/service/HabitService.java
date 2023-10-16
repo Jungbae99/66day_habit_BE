@@ -7,15 +7,21 @@ import day.dayBackend.domain.habit.Habit;
 import day.dayBackend.domain.habit.HabitVisibility;
 import day.dayBackend.dto.request.habit.HabitCreateRequestDto;
 import day.dayBackend.dto.request.habit.HabitUpdateRequestDto;
+import day.dayBackend.dto.response.habit.HabitListResponseDto;
+import day.dayBackend.dto.response.habit.HabitSummaryResponseDto;
 import day.dayBackend.dto.response.habit.HabitUpdateResponseDto;
 import day.dayBackend.exception.NotFoundException;
 import day.dayBackend.repository.HabitRepository;
 import day.dayBackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -62,11 +68,22 @@ public class HabitService {
             throw new AccessDeniedException("수정할 권한이 없습니다.");
         }
 
-        if (dto.getHabitName().isPresent()) { validateHabitDuplication(dto.getHabitName().get()); habit.updateHabitName(dto.getHabitName().get()); }
-        if (dto.getFontColor().isPresent()) { habit.updateFontColor(dto.getFontColor().get()); }
-        if (dto.getBackgroundColor().isPresent()) { habit.updateBackgroundColor(dto.getBackgroundColor().get()); }
-        if (dto.getHabitVisibility().isPresent()) { habit.updateHabitVisibility(dto.getHabitVisibility().get()); }
-        if (dto.getHabitTag().isPresent()) { habit.updateHabitTag(dto.getHabitTag().get()); }
+        if (dto.getHabitName().isPresent()) {
+            validateHabitDuplication(dto.getHabitName().get());
+            habit.updateHabitName(dto.getHabitName().get());
+        }
+        if (dto.getFontColor().isPresent()) {
+            habit.updateFontColor(dto.getFontColor().get());
+        }
+        if (dto.getBackgroundColor().isPresent()) {
+            habit.updateBackgroundColor(dto.getBackgroundColor().get());
+        }
+        if (dto.getHabitVisibility().isPresent()) {
+            habit.updateHabitVisibility(dto.getHabitVisibility().get());
+        }
+        if (dto.getHabitTag().isPresent()) {
+            habit.updateHabitTag(dto.getHabitTag().get());
+        }
 
         return HabitUpdateResponseDto.fromEntity(habit);
     }
@@ -89,6 +106,20 @@ public class HabitService {
     }
 
     /**
+     * 유명한 습관 목록 조회
+     */
+    public HabitListResponseDto getHabitList(Pageable pageable) {
+        Page<Habit> habitList = habitRepository.findAllHabit(pageable);
+
+        return HabitListResponseDto.of(
+                habitList.getTotalElements(),
+                habitList.getTotalPages(),
+                habitList.getContent().stream().
+                map(HabitSummaryResponseDto::fromEntity).collect(Collectors.toList()));
+    }
+
+
+    /**
      * 중복체크 유틸
      */
     private void validateHabitDuplication(String habitName) throws DuplicateKeyException {
@@ -98,5 +129,5 @@ public class HabitService {
                 });
     }
 
-    
+
 }
