@@ -78,6 +78,17 @@ public class MemberController {
     }
 
     /**
+     * 친구의 회원정보 조회
+     */
+    @GetMapping("/detail/friend")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    public CommonResponseDto<MemberDetailResponseDto> getMyDetailInfoV1(@RequestParam(name = "memberId")Long memberId) {
+        return CommonResponseDto.<MemberDetailResponseDto>builder()
+                .data(memberService.getMemberDetailById(memberId))
+                .build();
+    }
+
+    /**
      * 회원정보 수정
      */
     @PatchMapping("")
