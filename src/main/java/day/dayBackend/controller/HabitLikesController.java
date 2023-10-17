@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -55,9 +54,7 @@ public class HabitLikesController {
      * 좋아요 삭제
      */
     @DeleteMapping("/{habitLikesId}")
-    public CommonResponseDto<Map<String, Long>> deleteHabitLikesV1(
-            @PathVariable(name = "habitLikesId") Long habitLikesId
-    ) {
+    public CommonResponseDto<Map<String, Long>> deleteHabitLikesV1(@PathVariable(name = "habitLikesId") Long habitLikesId) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
                 .data(Map.of("habitLikesId", habitLikesService.deleteLikes(memberId, habitLikesId)))
