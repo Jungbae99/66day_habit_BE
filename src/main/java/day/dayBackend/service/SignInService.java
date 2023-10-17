@@ -29,6 +29,7 @@ public class SignInService {
      */
     public Long directJoin(MemberDirectCreateRequestDto dto) {
         validateEmailDuplication(dto.getEmail());
+        usernameDuplicationCheck(dto.getUsername());
 
         String encoded = passwordEncoder.encode(dto.getPassword());
 
@@ -49,16 +50,25 @@ public class SignInService {
     }
 
 
-
-
     /**
      * 중복체크 유틸
      */
+    private void validateUsernameDuplication(String username) throws DuplicateKeyException {
+        memberRepository.findByUsernameAndDeletedAtNull(username)
+                .ifPresent(member -> {
+                            throw new DuplicateKeyException("이미 같은 이름이 존재합니다.");
+                        });
+    }
+
     private void validateEmailDuplication(String email) throws DuplicateKeyException {
         memberRepository.findByEmailAndDeletedAtNull(email)
                 .ifPresent(member -> {
                     throw new DuplicateKeyException("이미 같은 이메일이 존재합니다.");
                 });
+    }
+
+    public void usernameDuplicationCheck(String username) {
+        validateUsernameDuplication(username);
     }
 
     public void emailDuplicationCheck(String email) {

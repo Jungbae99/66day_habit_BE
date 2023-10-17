@@ -10,7 +10,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -45,6 +47,12 @@ public class Member extends BaseAuditingListener {
     @OneToMany(mappedBy = "member")
     private List<MemberAuthority> memberAuthorities = new ArrayList<>();
 
+    @OneToMany(mappedBy = "following")
+    private Set<Friendship> following = new HashSet<>();
+
+    @OneToMany(mappedBy = "follower")
+    private Set<Friendship> follower = new HashSet<>();
+
     @Builder
     Member(String email, String password, String username, String introduction) {
         this.email = email;
@@ -75,11 +83,11 @@ public class Member extends BaseAuditingListener {
         this.introduction = introduction;
     }
 
-    public void delete() {
-        super.delete();
-    }
-
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public void delete() {
+        super.delete();
     }
 }

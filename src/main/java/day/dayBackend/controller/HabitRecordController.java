@@ -38,7 +38,7 @@ public class HabitRecordController {
     @PostMapping("/{habitId}")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     public CommonResponseDto<Map<String, Integer>> createHabitRecordV1(@PathVariable(name = "habitId") Long habitId,
-                                                                      @RequestBody HabitRecordRequestDto dto) {
+                                                                       @RequestBody HabitRecordRequestDto dto) {
         return CommonResponseDto.<Map<String, Integer>>builder()
                 .data(Map.of("dayNumber", habitRecordService.createHabitRecord(habitId, dto)))
                 .build();
@@ -63,7 +63,7 @@ public class HabitRecordController {
     @DeleteMapping("/{habitId}")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     public CommonResponseDto<Map<String, Integer>> deleteHabitRecordV1(@PathVariable(name = "habitId") Long habitId,
-                                                                     @RequestParam(value = "dayNumber") Integer dayNumber) {
+                                                                       @RequestParam(value = "dayNumber") Integer dayNumber) {
         return CommonResponseDto.<Map<String, Integer>>builder()
                 .data(Map.of("dayNumber", habitRecordService.deleteHabitRecord(habitId, dayNumber)))
                 .build();
