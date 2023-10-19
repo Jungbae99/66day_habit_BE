@@ -2,12 +2,14 @@ package day.dayBackend.service;
 
 
 import day.dayBackend.domain.Member;
+import day.dayBackend.domain.Upload;
 import day.dayBackend.domain.authority.MemberAuthority;
 import day.dayBackend.dto.request.member.MemberDirectCreateRequestDto;
 import day.dayBackend.exception.NotFoundException;
 import day.dayBackend.repository.AuthorityRepository;
 import day.dayBackend.repository.MemberAuthorityRepository;
 import day.dayBackend.repository.MemberRepository;
+import day.dayBackend.repository.UploadRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +25,7 @@ public class SignInService {
     private final PasswordEncoder passwordEncoder;
     private final MemberAuthorityRepository memberAuthorityRepository;
     private final AuthorityRepository authorityRepository;
+    private final UploadRepository uploadRepository;
 
     /**
      * 회원가입
@@ -32,11 +35,13 @@ public class SignInService {
         usernameDuplicationCheck(dto.getUsername());
 
         String encoded = passwordEncoder.encode(dto.getPassword());
+        Upload profileImage = uploadRepository.findByIdAndDeletedAtNull(1L).orElseThrow(NotFoundException::new);
 
         Member member = Member.builder()
                 .email(dto.getEmail())
                 .password(encoded)
                 .introduction(dto.getIntroduction())
+                .profileImage(profileImage)
                 .username(dto.getUsername())
                 .build();
 

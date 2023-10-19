@@ -55,11 +55,12 @@ public class Member extends BaseAuditingListener {
     private Set<Friendship> follower = new HashSet<>();
 
     @Builder
-    Member(String email, String password, String username, String introduction) {
+    Member(String email, String password, String username, String introduction, Upload profileImage) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.introduction = introduction;
+        this.profileImage = profileImage;
         // :TODO email 구현 시 변경
         this.certified = Certified.CERTIFIED;
     }
