@@ -12,6 +12,5 @@ public class MemberUpdateRequestDto {
 
     private JsonNullable<String> introduction = JsonNullable.undefined();
 
-//:TODO    private JsonNullable<MultipartFile> profileImage = JsonNullable.undefined();
 
 }

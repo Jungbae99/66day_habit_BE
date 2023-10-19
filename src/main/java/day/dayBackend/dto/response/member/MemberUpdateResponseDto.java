@@ -9,16 +9,13 @@ public class MemberUpdateResponseDto {
 
     private String username;
     private String introduction;
-//    private String profileImage;
+    private String profileImage;
 
-    public static MemberUpdateResponseDto fromEntity(Member member) {
+    public static MemberUpdateResponseDto fromEntityWithImageUrl(Member member) {
         MemberUpdateResponseDto dto = new MemberUpdateResponseDto();
         dto.username = member.getUsername();
         dto.introduction = member.getIntroduction();
-        //TODO: url
-//        dto.profileImage = String.valueOf(member.getProfileImage());
+        dto.profileImage = member.getProfileImage().getUrl();
         return dto;
     }
-
-
 }

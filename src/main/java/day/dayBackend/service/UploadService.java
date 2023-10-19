@@ -1,5 +1,6 @@
 package day.dayBackend.service;
 
+import day.dayBackend.domain.FileCategory;
 import day.dayBackend.domain.Member;
 import day.dayBackend.domain.Upload;
 import day.dayBackend.exception.NotFoundException;
@@ -11,9 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 @Service
@@ -21,39 +19,54 @@ import java.util.UUID;
 @Transactional(readOnly = true)
 public class UploadService {
 
-    private UploadRepository uploadRepository;
-    private MemberRepository memberRepository;
-
-    private final String uploadDir = "C:/66day/upload";
+    private final CloudStorageService cloudStorageService;
+    private final UploadRepository uploadRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 파일 업로드
      */
-    public Long uploadFile(Long memberId, MultipartFile file) {
+    @Transactional
+    public Long uploadFile(Long memberId, MultipartFile file) throws IOException {
+
+        FileCategory category = FileCategory.PROFILE;
+
+        // 영속화
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
 
-        String originalFilename = file.getOriginalFilename();
-        String uniqueFileName = UUID.randomUUID().toString() + "_" + originalFilename;
-        Path filePath = Path.of(uploadDir, uniqueFileName);
-
-        try {
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            throw new RuntimeException("파일 업로드 중에 오류가 발생했습니다.");
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("파일이 존재하지 않습니다.");
         }
+
+        String originName = file.getOriginalFilename() == null ? "tmp" : file.getOriginalFilename();
+        String savedName = generateSavedName(originName);
+        String filePath = category.toString().toLowerCase() + "/" + savedName;
+        String savedUrl = cloudStorageService.getUrl(filePath);
 
         Upload upload = Upload.builder()
                 .member(member)
-                .url(uploadDir)
-                .originName(originalFilename)
-                .savedName(uniqueFileName)
-                .type(file.getContentType())
-                .extension(getFileExtension(originalFilename))
+                .url(savedUrl)
+                .originName(originName)
+                .savedName(savedName)
+                .type(file.getContentType()) // MIME 타입
+                .extension(getFileExtension(originName))
                 .size(file.getSize())
                 .build();
 
-        return uploadRepository.save(upload).getId();
+        cloudStorageService.uploadFile(file, filePath);
+        Upload savedUpload = uploadRepository.save(upload);
+
+        return savedUpload.getId();
+    }
+
+    /**
+     * 랜덤 파일명
+     */
+    private String generateSavedName(String originName) {
+        String uniqueId = UUID.randomUUID().toString();
+        String fileExtension = getFileExtension(originName);
+        return uniqueId + "-" + System.currentTimeMillis() + "." + fileExtension;
     }
 
     /**
