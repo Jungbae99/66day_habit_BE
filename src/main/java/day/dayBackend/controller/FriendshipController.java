@@ -3,8 +3,6 @@ package day.dayBackend.controller;
 import day.dayBackend.config.SecurityUtil;
 import day.dayBackend.dto.response.CommonResponseDto;
 import day.dayBackend.dto.response.FriendshipResponseDto;
-import day.dayBackend.dto.response.member.MemberDetailResponseDto;
-import day.dayBackend.dto.response.member.MemberResponseDto;
 import day.dayBackend.exception.NotAuthenticatedException;
 import day.dayBackend.service.FriendshipService;
 import day.dayBackend.service.MemberService;

@@ -1,8 +1,5 @@
 package day.dayBackend.controller;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import day.dayBackend.config.SecurityUtil;
 import day.dayBackend.dto.request.member.MemberDeleteRequestDto;
 import day.dayBackend.dto.request.member.PasswordUpdateRequestDto;
@@ -10,17 +7,13 @@ import day.dayBackend.dto.request.member.EmailUpdateRequestDto;
 import day.dayBackend.dto.request.member.MemberDirectCreateRequestDto;
 import day.dayBackend.dto.request.member.MemberUpdateRequestDto;
 import day.dayBackend.dto.response.*;
-import day.dayBackend.dto.response.member.EmailUpdateResponseDto;
-import day.dayBackend.dto.response.member.MemberDetailResponseDto;
-import day.dayBackend.dto.response.member.MemberResponseDto;
-import day.dayBackend.dto.response.member.MemberUpdateResponseDto;
+import day.dayBackend.dto.response.member.*;
 import day.dayBackend.exception.NotAuthenticatedException;
 import day.dayBackend.service.MemberService;
 import day.dayBackend.service.SignInService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -52,7 +45,7 @@ public class MemberController {
     /**
      * Email 중복체크
      */
-    @GetMapping("/email")
+    @GetMapping("/email/check")
     public CommonResponseDto emailDuplicationCheckV1(@Valid @RequestParam(value = "email") @Email(message = "{validation.Pattern.email}") String email) {
         signInService.emailDuplicationCheck(email);
         return CommonResponseDto.builder().build();
@@ -116,6 +109,18 @@ public class MemberController {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<EmailUpdateResponseDto>builder()
                 .data(memberService.updateEmail(memberId, dto))
+                .build();
+    }
+
+    /**
+     * 이메일 조회
+     */
+    @GetMapping("/email")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    public CommonResponseDto<EmailResponseDto> getEmailV1() {
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
+        return CommonResponseDto.<EmailResponseDto>builder()
+                .data(memberService.getEmail(memberId))
                 .build();
     }
 
