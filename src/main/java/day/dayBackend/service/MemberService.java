@@ -7,10 +7,7 @@ import day.dayBackend.dto.request.member.MemberDeleteRequestDto;
 import day.dayBackend.dto.request.member.EmailUpdateRequestDto;
 import day.dayBackend.dto.request.member.MemberUpdateRequestDto;
 import day.dayBackend.dto.request.member.PasswordUpdateRequestDto;
-import day.dayBackend.dto.response.member.EmailUpdateResponseDto;
-import day.dayBackend.dto.response.member.MemberDetailResponseDto;
-import day.dayBackend.dto.response.member.MemberResponseDto;
-import day.dayBackend.dto.response.member.MemberUpdateResponseDto;
+import day.dayBackend.dto.response.member.*;
 import day.dayBackend.exception.NotFoundException;
 import day.dayBackend.repository.MemberAuthorityRepository;
 import day.dayBackend.repository.MemberRepository;
@@ -54,6 +51,15 @@ public class MemberService {
         return MemberDetailResponseDto.fromEntity(
                 memberRepository.findByIdAndDeletedAtNull(id).orElseThrow(
                         () -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다")));
+    }
+
+    /**
+     * 회원 이메일 조회
+     */
+    public EmailResponseDto getEmail(Long id) {
+        return EmailResponseDto.fromEntity(
+                memberRepository.findByIdAndDeletedAtNull(id).orElseThrow(
+                        () -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다.")));
     }
 
     /**

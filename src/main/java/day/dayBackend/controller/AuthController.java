@@ -4,7 +4,6 @@ import day.dayBackend.dto.request.DirectSignInRequestDto;
 import day.dayBackend.dto.response.CommonResponseDto;
 import day.dayBackend.dto.response.SignInResponseDto;
 import day.dayBackend.jwt.TokenDto;
-import day.dayBackend.jwt.TokenProvider;
 import day.dayBackend.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.validation.Valid;
