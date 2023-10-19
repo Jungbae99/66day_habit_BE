@@ -37,6 +37,10 @@ public class Member extends BaseAuditingListener {
     @JoinColumn(name = "profile_image_id")
     private Upload profileImage;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "background_image_id")
+    private Upload backgroundImage;
+
     private String refreshToken;
 
     @Enumerated(EnumType.STRING)
@@ -55,12 +59,13 @@ public class Member extends BaseAuditingListener {
     private Set<Friendship> follower = new HashSet<>();
 
     @Builder
-    Member(String email, String password, String username, String introduction, Upload profileImage) {
+    Member(String email, String password, String username, String introduction, Upload profileImage, Upload backgroundImage) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.introduction = introduction;
         this.profileImage = profileImage;
+        this.backgroundImage = backgroundImage;
         // :TODO email 구현 시 변경
         this.certified = Certified.CERTIFIED;
     }
@@ -79,6 +84,10 @@ public class Member extends BaseAuditingListener {
 
     public void updateProfileImage(Upload profileImage) {
         this.profileImage = profileImage;
+    }
+
+    public void updateBackgroundImage(Upload background) {
+        this.backgroundImage = background;
     }
 
     public void updateIntroduction(String introduction) {

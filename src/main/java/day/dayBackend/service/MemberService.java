@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
 
 
 @Service
@@ -66,24 +65,35 @@ public class MemberService {
      * 회원 수정
      */
     @Transactional
-    public MemberUpdateResponseDto updateMember(Long memberId, MemberUpdateRequestDto dto, MultipartFile profileImage) throws IOException {
+    public MemberUpdateResponseDto updateMember(Long memberId, MemberUpdateRequestDto dto, MultipartFile profileImage, MultipartFile backgroundImage) {
 
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다"));
 
-        if (dto.getUsername().isPresent()) {
-            member.updateUsername(dto.getUsername().get());
+        if (dto != null) {
+            if (dto.getUsername().isPresent()) {
+                member.updateUsername(dto.getUsername().get());
+            }
+            if (dto.getIntroduction().isPresent()) {
+                member.updateIntroduction(dto.getIntroduction().get());
+            }
         }
-        if (dto.getIntroduction().isPresent()) {
-            member.updateIntroduction(dto.getIntroduction().get());
-        }
-        if (!profileImage.isEmpty() && profileImage != null) {
-            Long uploadId = uploadService.uploadFile(memberId, profileImage);
-            Upload upload = uploadRepository.findByIdAndDeletedAtNull(uploadId)
+
+        if (profileImage != null && !profileImage.isEmpty()) {
+            Long profileImageId = uploadService.uploadFile(memberId, profileImage);
+            Upload profile = uploadRepository.findByIdAndDeletedAtNull(profileImageId)
                     .orElseThrow(NotFoundException::new);
-            member.updateProfileImage(upload);
+            member.updateProfileImage(profile);
         }
-        return MemberUpdateResponseDto.fromEntityWithImageUrl(member);
+
+        if (backgroundImage != null && !backgroundImage.isEmpty()) {
+            Long backgroundImageId = uploadService.uploadFile(memberId, backgroundImage);
+            Upload background = uploadRepository.findByIdAndDeletedAtNull(backgroundImageId)
+                    .orElseThrow(NotFoundException::new);
+            member.updateBackgroundImage(background);
+        }
+
+        return MemberUpdateResponseDto.fromEntity(member);
     }
 
     /**

@@ -27,9 +27,13 @@ public class UploadService {
      * 파일 업로드
      */
     @Transactional
-    public Long uploadFile(Long memberId, MultipartFile file) throws IOException {
+    public Long uploadFile(Long memberId, MultipartFile file) {
 
         FileCategory category = FileCategory.PROFILE;
+
+        if (file.getName().startsWith("background")) {
+            category = FileCategory.BACKGROUND;
+        }
 
         // 영속화
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
@@ -52,6 +56,7 @@ public class UploadService {
                 .type(file.getContentType()) // MIME 타입
                 .extension(getFileExtension(originName))
                 .size(file.getSize())
+                .category(category)
                 .build();
 
         cloudStorageService.uploadFile(file, filePath);

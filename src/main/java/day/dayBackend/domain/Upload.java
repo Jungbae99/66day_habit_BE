@@ -45,11 +45,11 @@ public class Upload extends BaseAuditingListener {
     private Long size;
 
     @Builder
-    Upload(String url, Member member, String originName, String savedName, String type, String extension, Long size) {
+    Upload(String url, Member member, String originName, String savedName, String type, String extension, Long size, FileCategory category) {
         this.url = url;
         this.member = member;
         this.originName = originName;
-        this.fileCategory = FileCategory.PROFILE;
+        this.fileCategory = category;
         this.savedName = savedName;
         this.type = type;
         this.extension = extension;

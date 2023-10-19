@@ -92,11 +92,12 @@ public class MemberController {
      */
     @PatchMapping("")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public CommonResponseDto<MemberUpdateResponseDto> updateMyInfoV1(@RequestPart("memberInfo") final MemberUpdateRequestDto dto,
-                                                                     @RequestPart("profileImage") MultipartFile profileImage) throws IOException {
+    public CommonResponseDto<MemberUpdateResponseDto> updateMyInfoV1(@RequestPart(value = "memberInfo", required = false) final MemberUpdateRequestDto dto,
+                                                                     @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
+                                                                     @RequestPart(value = "backgroundImage", required = false) MultipartFile backgroundImage) throws IOException {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<MemberUpdateResponseDto>builder()
-                .data(memberService.updateMember(memberId, dto, profileImage))
+                .data(memberService.updateMember(memberId, dto, profileImage, backgroundImage))
                 .build();
     }
 
