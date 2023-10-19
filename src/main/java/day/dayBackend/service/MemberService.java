@@ -1,6 +1,7 @@
 package day.dayBackend.service;
 
 import day.dayBackend.domain.Member;
+import day.dayBackend.domain.Upload;
 import day.dayBackend.domain.authority.MemberAuthority;
 import day.dayBackend.dto.request.member.MemberDeleteRequestDto;
 import day.dayBackend.dto.request.member.EmailUpdateRequestDto;
@@ -13,12 +14,17 @@ import day.dayBackend.dto.response.member.MemberUpdateResponseDto;
 import day.dayBackend.exception.NotFoundException;
 import day.dayBackend.repository.MemberAuthorityRepository;
 import day.dayBackend.repository.MemberRepository;
+import day.dayBackend.repository.UploadRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Optional;
 
 
 @Service
@@ -30,6 +36,7 @@ public class MemberService {
     private final UploadService uploadService;
     private final PasswordEncoder passwordEncoder;
     private final MemberAuthorityRepository memberAuthorityRepository;
+    private final UploadRepository uploadRepository;
 
     /**
      * 메인페이지 회원정보 조회
@@ -53,9 +60,9 @@ public class MemberService {
      * 회원 수정
      */
     @Transactional
-    public MemberUpdateResponseDto updateMember(Long id, MemberUpdateRequestDto dto) {
+    public MemberUpdateResponseDto updateMember(Long memberId, MemberUpdateRequestDto dto, MultipartFile profileImage) throws IOException {
 
-        Member member = memberRepository.findByIdAndDeletedAtNull(id)
+        Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다"));
 
         if (dto.getUsername().isPresent()) {
@@ -64,12 +71,13 @@ public class MemberService {
         if (dto.getIntroduction().isPresent()) {
             member.updateIntroduction(dto.getIntroduction().get());
         }
-//        if (dto.getProfileImage().isPresent()) {
-//            MultipartFile profileImage = dto.getProfileImage().get();
-//            uploadService.uploadFile(id, profileImage);
-//        }
-
-        return MemberUpdateResponseDto.fromEntity(member);
+        if (!profileImage.isEmpty() && profileImage != null) {
+            Long uploadId = uploadService.uploadFile(memberId, profileImage);
+            Upload upload = uploadRepository.findByIdAndDeletedAtNull(uploadId)
+                    .orElseThrow(NotFoundException::new);
+            member.updateProfileImage(upload);
+        }
+        return MemberUpdateResponseDto.fromEntityWithImageUrl(member);
     }
 
     /**

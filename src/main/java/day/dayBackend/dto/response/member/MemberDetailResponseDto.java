@@ -13,8 +13,7 @@ public class MemberDetailResponseDto {
     public static MemberDetailResponseDto fromEntity(Member member) {
         MemberDetailResponseDto dto = new MemberDetailResponseDto();
         dto.username = member.getUsername();
-        //:TODO url
-        dto.profileImage = String.valueOf(member.getProfileImage());
+        dto.profileImage = member.getProfileImage().getUrl();
         dto.introduction = member.getIntroduction();
         return dto;
     }

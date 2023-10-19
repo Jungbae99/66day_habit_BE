@@ -24,6 +24,9 @@ public class FriendshipService {
     private final MemberRepository memberRepository;
     private final FriendshipRepository friendshipRepository;
 
+    /**
+     * 친구 추가하기
+     */
     @Transactional
     public Long followFriend(Long memberId, Long followId) {
 

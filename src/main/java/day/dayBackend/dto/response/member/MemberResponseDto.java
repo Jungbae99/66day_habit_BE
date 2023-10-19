@@ -19,8 +19,7 @@ public class MemberResponseDto {
         dto.username = member.getUsername();
         dto.introduction = member.getIntroduction();
         dto.habitList = member.getHabitList();
-        //:TODO url 을 넘겨야함.
-        dto.profileImage = String.valueOf(member.getProfileImage());
+        dto.profileImage = member.getProfileImage().getUrl();
         return dto;
     }
 

@@ -1,5 +1,8 @@
 package day.dayBackend.controller;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import day.dayBackend.config.SecurityUtil;
 import day.dayBackend.dto.request.member.MemberDeleteRequestDto;
 import day.dayBackend.dto.request.member.PasswordUpdateRequestDto;
@@ -17,10 +20,13 @@ import day.dayBackend.service.SignInService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 
 @CrossOrigin(origins = "https://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
@@ -82,7 +88,7 @@ public class MemberController {
      */
     @GetMapping("/detail/friend")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public CommonResponseDto<MemberDetailResponseDto> getMyDetailInfoV1(@RequestParam(name = "memberId")Long memberId) {
+    public CommonResponseDto<MemberDetailResponseDto> getMyDetailInfoV1(@RequestParam(name = "memberId") Long memberId) {
         return CommonResponseDto.<MemberDetailResponseDto>builder()
                 .data(memberService.getMemberDetailById(memberId))
                 .build();
@@ -93,10 +99,11 @@ public class MemberController {
      */
     @PatchMapping("")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public CommonResponseDto<MemberUpdateResponseDto> updateMyInfoV1(@Valid @RequestBody final MemberUpdateRequestDto dto) {
+    public CommonResponseDto<MemberUpdateResponseDto> updateMyInfoV1(@RequestPart("memberInfo") final MemberUpdateRequestDto dto,
+                                                                     @RequestPart("profileImage") MultipartFile profileImage) throws IOException {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<MemberUpdateResponseDto>builder()
-                .data(memberService.updateMember(memberId, dto))
+                .data(memberService.updateMember(memberId, dto, profileImage))
                 .build();
     }
 
