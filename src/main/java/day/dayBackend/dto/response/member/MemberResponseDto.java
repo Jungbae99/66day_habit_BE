@@ -13,6 +13,7 @@ public class MemberResponseDto {
     private String introduction;
     private List<Habit> habitList;
     private String profileImage;
+    private String backgroundImage;
 
     public static MemberResponseDto fromEntity(Member member) {
         MemberResponseDto dto = new MemberResponseDto();
@@ -20,6 +21,7 @@ public class MemberResponseDto {
         dto.introduction = member.getIntroduction();
         dto.habitList = member.getHabitList();
         dto.profileImage = member.getProfileImage().getUrl();
+        dto.backgroundImage = member.getBackgroundImage().getUrl();
         return dto;
     }
 
