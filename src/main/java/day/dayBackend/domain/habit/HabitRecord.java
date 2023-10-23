@@ -30,7 +30,4 @@ public class HabitRecord {
         this.achievementRate = achievementRate;
     }
 
-    public void delete() {
-        this.achievementRate = 0;
-    }
 }

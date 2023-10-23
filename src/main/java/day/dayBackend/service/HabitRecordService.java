@@ -46,7 +46,7 @@ public class HabitRecordService {
             throw new IllegalArgumentException("습관 기록 생성이 허용되지 않습니다.");
         }
 
-        if (habitRecordRepository.findByDayNumber(dto.getDayNumber()).isPresent()) {
+        if (habitRecordRepository.findByHabitIdAndDayNumber(habitId, dto.getDayNumber()).isPresent()) {
             throw new IllegalArgumentException("해당하는 습관 기록이 이미 존재합니다.");
         }
 
@@ -81,7 +81,7 @@ public class HabitRecordService {
         HabitRecord habitRecord = habitRecordRepository.findByHabitId(habitId, dayNumber)
                 .orElseThrow(() -> new NotFoundException("해당하는 습관 기록이 존재하지 않습니다."));
 
-        habitRecord.delete();
+        habitRecordRepository.delete(habitRecord);
         return dayNumber;
     }
 
