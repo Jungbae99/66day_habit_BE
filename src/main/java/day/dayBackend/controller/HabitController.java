@@ -28,6 +28,45 @@ public class HabitController {
     private final MemberService memberService;
 
     /**
+     * 새로운 습관 조회
+     */
+    @GetMapping("new")
+    public CommonResponseDto getNewestHabitV1(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                              @RequestParam(value = "limit", required = false, defaultValue = "100") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return CommonResponseDto.<HabitListResponseDto>builder()
+                .data(habitService.getNewestHabit(pageable))
+                .build();
+    }
+
+    /**
+     * 완료한 습관 조회
+     */
+    @GetMapping("done")
+    public CommonResponseDto getDoneHabitV1(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                            @RequestParam(value = "limit", required = false, defaultValue = "100") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return CommonResponseDto.<HabitListResponseDto>builder()
+                .data(habitService.getDoneHabit(pageable))
+                .build();
+    }
+
+    /**
+     * 유명한 습관 목록 조회
+     */
+    @GetMapping("/famous")
+    public CommonResponseDto getFamousHabitV1(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                              @RequestParam(value = "limit", required = false, defaultValue = "100") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return CommonResponseDto.<HabitListResponseDto>builder()
+                .data(habitService.getFamousHabit(pageable))
+                .build();
+    }
+
+    /**
      * 습관 생성
      */
     @PostMapping("")
@@ -63,20 +102,6 @@ public class HabitController {
                 .data(Map.of("habitId", habitService.deleteHabit(memberId, habitId)))
                 .build();
     }
-
-    /**
-     * 유명한 습관 목록 조회
-     */
-    @GetMapping("/famous")
-    public CommonResponseDto getFamousHabitV1 (@RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                               @RequestParam(value = "limit", required = false, defaultValue = "100") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-        return CommonResponseDto.<HabitListResponseDto>builder()
-                .data(habitService.getHabitList(pageable))
-                .build();
-    }
-
 
     /**
      * 관리자 습관 등록
