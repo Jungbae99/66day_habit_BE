@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -150,9 +151,12 @@ public class TokenProvider implements InitializingBean {
      * refreshToken 담을 쿠키 생성
      */
     public ResponseCookie getRefreshTokenCookie(Authentication authentication) {
-
         String refreshToken = getRefreshToken(authentication);
         return generateCookie("jwtCookie", refreshToken, "/", true, "Lax", refreshTokenValidityTime);
+    }
+
+    public ResponseCookie setRefreshTokenCookie(String refreshToken) {
+        return generateCookie("jwtCookie", refreshToken, "/", true, "Lax", 0);
     }
 
 
@@ -181,5 +185,33 @@ public class TokenProvider implements InitializingBean {
         return builder.signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
+    }
+
+    /**
+     * 토큰 유효시간 구하기
+     */
+    public Long getExpiration(String token, boolean isAccessToken) {
+        return Jwts.parserBuilder()
+                .setSigningKey(isAccessToken ? accessKey : refreshKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration().getTime();
+    }
+
+    /**
+     * 토큰 멤버 아이디 구하기
+     */
+    public Long getMemberId(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(accessKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        if (!claims.containsKey("memberId")) {
+            throw new AccessDeniedException("INVALID_TOKEN");
+        }
+        return claims.get("memberId", Long.class);
     }
 }

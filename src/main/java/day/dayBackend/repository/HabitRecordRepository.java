@@ -19,5 +19,5 @@ public interface HabitRecordRepository extends JpaRepository<HabitRecord, Long> 
     @Query("SELECT hr FROM HabitRecord hr WHERE hr.habit.id = :habitId AND hr.dayNumber =:dayNumber AND hr.habit.deletedAt IS NULL")
     Optional<HabitRecord> findByHabitId(@Param("habitId") Long habitId, @Param("dayNumber") Integer dayNumber);
 
-    Optional<HabitRecord> findByDayNumber(int dayNumber);
+    Optional<HabitRecord> findByHabitIdAndDayNumber(Long habitId, int dayNumber);
 }

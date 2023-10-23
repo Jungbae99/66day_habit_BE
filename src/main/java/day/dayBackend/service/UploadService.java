@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.UUID;
 
 @Service
@@ -29,7 +28,7 @@ public class UploadService {
     @Transactional
     public Long uploadFile(Long memberId, MultipartFile file) {
 
-        FileCategory category = FileCategory.PROFILE;
+        FileCategory category = getCategory(file);
 
         if (file.getName().startsWith("background")) {
             category = FileCategory.BACKGROUND;
@@ -63,6 +62,16 @@ public class UploadService {
         Upload savedUpload = uploadRepository.save(upload);
 
         return savedUpload.getId();
+    }
+
+    /**
+     * 카테고리명
+     */
+    private FileCategory getCategory(MultipartFile file) {
+        if (file.getName().startsWith("background")) {
+            return FileCategory.BACKGROUND;
+        }
+        return FileCategory.PROFILE;
     }
 
     /**

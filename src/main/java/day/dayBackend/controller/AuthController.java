@@ -9,6 +9,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,5 +51,14 @@ public class AuthController {
                 .body(CommonResponseDto.<TokenDto>builder()
                         .data(tokenDto)
                         .build());
+    }
+
+    /**
+     * 로그아웃
+     */
+    @PostMapping("/signOut")
+    public CommonResponseDto signOutV1(@RequestHeader("Authorization") String accessToken) {
+        authService.signOut(accessToken);
+        return CommonResponseDto.builder().build();
     }
 }

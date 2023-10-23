@@ -108,8 +108,8 @@ public class HabitService {
     /**
      * 유명한 습관 목록 조회
      */
-    public HabitListResponseDto getHabitList(Pageable pageable) {
-        Page<Habit> habitList = habitRepository.findAllHabit(pageable);
+    public HabitListResponseDto getFamousHabit(Pageable pageable) {
+        Page<Habit> habitList = habitRepository.findFamousHabit(pageable);
 
         return HabitListResponseDto.of(
                 habitList.getTotalElements(),
@@ -118,6 +118,31 @@ public class HabitService {
                 map(HabitSummaryResponseDto::fromEntity).collect(Collectors.toList()));
     }
 
+    /**
+     * 최근에 생긴 습관 조회
+     */
+    public HabitListResponseDto getNewestHabit(Pageable pageable) {
+        Page<Habit> habitList = habitRepository.findNewestHabit(pageable);
+
+        return HabitListResponseDto.of(
+                habitList.getTotalElements(),
+                habitList.getTotalPages(),
+                habitList.getContent().stream().
+                        map(HabitSummaryResponseDto::fromEntity).collect(Collectors.toList()));
+    }
+
+    /**
+     * 66일 모두 기록한 습관 조회
+     */
+    public HabitListResponseDto getDoneHabit(Pageable pageable) {
+        Page<Habit> habitList = habitRepository.findDoneHabit(pageable);
+
+        return HabitListResponseDto.of(
+                habitList.getTotalElements(),
+                habitList.getTotalPages(),
+                habitList.getContent().stream().
+                        map(HabitSummaryResponseDto::fromEntity).collect(Collectors.toList()));
+    }
 
     /**
      * 중복체크 유틸
@@ -129,5 +154,5 @@ public class HabitService {
                 });
     }
 
-
+    
 }
