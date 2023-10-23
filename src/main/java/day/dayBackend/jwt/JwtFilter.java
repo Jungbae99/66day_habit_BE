@@ -6,6 +6,8 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -18,10 +20,12 @@ public class JwtFilter extends GenericFilterBean {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
+    private RedisTemplate<String, String> redisTemplate;
     private final TokenProvider tokenProvider;
 
-    public JwtFilter(TokenProvider tokenProvider) {
+    public JwtFilter(TokenProvider tokenProvider, RedisTemplate<String, String> redisTemplate) {
         this.tokenProvider = tokenProvider;
+        this.redisTemplate = redisTemplate;
     }
 
 
@@ -42,10 +46,19 @@ public class JwtFilter extends GenericFilterBean {
         chain.doFilter(request, response);
     }
 
+    /**
+     * 토큰 블랙리스트 처리
+     */
     private void validBlackToken(String accessToken) {
-        // TODO: Redis
+        String blackList = redisTemplate.opsForValue().get(accessToken);
+        if (StringUtils.hasText(blackList)) {
+            throw new AccessDeniedException("SIGN_OUT_TOKEN");
+        }
     }
 
+    /**
+     * Bearer 토큰 검증
+     */
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
