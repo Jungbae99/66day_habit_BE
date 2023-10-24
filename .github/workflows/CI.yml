@@ -6,9 +6,9 @@ on:
       - master
 env:
   AWS:REGION: ap-northeast-2
-  S3_BUCKET_NAME: "${{ AWS_BUCKET_NAME }}"
-  CODE_DEPLOY_APPLICATION_NAME : "${{ AWS_CODEDEPLOY_NAME }}"
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: "${{ AWS_CODEDEPLOY_GROUP_NAME }}"
+  S3_BUCKET_NAME: 66day-bucket
+  CODE_DEPLOY_APPLICATION_NAME : habitDeploy
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: habitDeployGroup
 
 permissions:
   contents: read
