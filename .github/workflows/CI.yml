@@ -5,7 +5,7 @@ on:
     branches:
       - master
 env:
-  AWS:REGION: ap-northeast-2
+  AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: 66day-bucket
   CODE_DEPLOY_APPLICATION_NAME : habitDeploy
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: habitDeployGroup
@@ -59,7 +59,7 @@ jobs:
           
     - name: Deploy to AWS EC2 from S3
       run: |
-        aws deploy create-deploymenyy \
+        aws deploy create-deployment \
           -application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
