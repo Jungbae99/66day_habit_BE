@@ -42,3 +42,4 @@ out/
 **/src/test/resources/config/
 **/src/main/generated/
 **/src/main/resources/*.p12
+**/src/main/resources/*.yml
