@@ -1,5 +1,5 @@
 package day.dayBackend.domain.habit;
 
 public enum BackgroundColor {
-    RED, ORANGE, YELLOW
+    PINK, ORANGE, LIGHTGREEN, MINT, SKYBLUE, BLUE, DARKBLUE, GRAY
 }
