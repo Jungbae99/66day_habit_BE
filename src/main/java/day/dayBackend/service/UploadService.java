@@ -30,10 +30,6 @@ public class UploadService {
 
         FileCategory category = getCategory(file);
 
-        if (file.getName().startsWith("background")) {
-            category = FileCategory.BACKGROUND;
-        }
-
         // 영속화
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
