@@ -2,10 +2,12 @@ package day.dayBackend.service;
 
 import day.dayBackend.domain.Friendship;
 import day.dayBackend.domain.Member;
+import day.dayBackend.domain.habit.Habit;
 import day.dayBackend.dto.response.FriendDetailResponseDto;
 import day.dayBackend.dto.response.FriendshipResponseDto;
 import day.dayBackend.exception.NotFoundException;
 import day.dayBackend.repository.FriendshipRepository;
+import day.dayBackend.repository.HabitRepository;
 import day.dayBackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
@@ -24,6 +27,7 @@ public class FriendshipService {
 
     private final MemberRepository memberRepository;
     private final FriendshipRepository friendshipRepository;
+    private final HabitRepository habitRepository;
 
     /**
      * 친구 추가하기
@@ -63,7 +67,19 @@ public class FriendshipService {
         Member friend = memberRepository.findByIdAndDeletedAtNull(friendId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
 
-        return FriendDetailResponseDto.fromEntity(friend, member);
+        Optional<List<Habit>> friendHabitList;
+
+        if (friendshipRepository.findByFollowerIdAndFollowingIdAndDeletedAtNull(memberId, friendId).isPresent()) {
+            friendHabitList = habitRepository.findHabitNotPrivate(friendId);
+        } else {
+            friendHabitList = habitRepository.findPublicHabits(friendId);
+        }
+
+        if (friendshipRepository.findByFollowerIdAndFollowingIdAndDeletedAtNull(memberId, friendId).isPresent()) {
+            return FriendDetailResponseDto.fromFriend(friend, friendHabitList.get(), 1);
+        }
+
+        return FriendDetailResponseDto.fromFriend(friend, friendHabitList.get(), 0);
     }
 
     /**

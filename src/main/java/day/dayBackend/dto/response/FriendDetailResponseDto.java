@@ -1,7 +1,7 @@
 package day.dayBackend.dto.response;
 
-import day.dayBackend.domain.Friendship;
 import day.dayBackend.domain.Member;
+import day.dayBackend.domain.habit.Habit;
 import day.dayBackend.dto.response.habit.HabitSummaryResponseDto;
 import lombok.Getter;
 
@@ -15,22 +15,17 @@ public class FriendDetailResponseDto {
     private String introduction;
     private String profileImage;
     private String backgroundImage;
-    private Long friendShipId;
+    private Integer friendShipId;
     private List<HabitSummaryResponseDto> friendHabitList; // :TODO
 
-    public static FriendDetailResponseDto fromEntity(Member friend, Member me) {
+    public static FriendDetailResponseDto fromFriend(Member friend, List<Habit> habitList, Integer friendCheck) {
         FriendDetailResponseDto dto = new FriendDetailResponseDto();
         dto.username = friend.getUsername();
         dto.introduction = friend.getIntroduction();
         dto.profileImage = friend.getProfileImage().getUrl();
         dto.backgroundImage = friend.getBackgroundImage().getUrl();
-
-        Friendship friendship = friend.getFollowing().stream().filter(f -> f.getFollower().equals(me))
-                .findFirst().orElse(null);
-
-        dto.friendShipId = friendship != null ? friendship.getId() : null;
-
-        dto.friendHabitList = friend.getHabitList().stream()
+        dto.friendShipId = friendCheck == 1 ? 1 : 0;
+        dto.friendHabitList = habitList.stream()
                 .map(habit -> HabitSummaryResponseDto.fromEntity(habit))
                 .collect(Collectors.toList());
 

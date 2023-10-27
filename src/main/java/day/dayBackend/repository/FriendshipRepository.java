@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
 
-
+    // follower id 로  친구정보를 찾기
     Optional<Friendship> findByFollowerIdAndFollowingIdAndDeletedAtNull(Long followerId, Long followingId);
 
     Page<Friendship> findFriendshipByFollowerIdAndDeletedAtNull(Long memberId, Pageable pageable);
