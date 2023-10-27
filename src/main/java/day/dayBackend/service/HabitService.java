@@ -94,13 +94,17 @@ public class HabitService {
      */
     @Transactional
     public Long deleteHabit(Long memberId, Long habitId) {
+        // member 영속화
+        Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
+                .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
+
         Habit habit = habitRepository.findByIdAndDeletedAtNull(habitId)
                 .orElseThrow(() -> new NotFoundException("해당하는 습관이 존재하지 않습니다."));
 
         if (!habit.getMember().getId().equals(memberId)) {
             throw new AccessDeniedException("수정할 권한이 없습니다.");
         }
-
+        
         habit.delete();
         return habit.getId();
     }

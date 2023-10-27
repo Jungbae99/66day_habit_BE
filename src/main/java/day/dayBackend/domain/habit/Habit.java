@@ -8,12 +8,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@Where(clause = "deleted_at is null")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class Habit extends BaseAuditingListener {
 
@@ -44,10 +46,10 @@ public class Habit extends BaseAuditingListener {
 
     private int progress; // 1 ~ 66 까지 얼마나 진행했는지에 대한 데이터
 
-    @OneToMany(mappedBy = "habit", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "habit" )
     private List<HabitRecord> habitRecords = new ArrayList<>();
 
-    @OneToMany(mappedBy = "habit")
+    @OneToMany(mappedBy = "habit", orphanRemoval = true)
     private List<HabitLikes> likes = new ArrayList<>();
 
     @Builder
