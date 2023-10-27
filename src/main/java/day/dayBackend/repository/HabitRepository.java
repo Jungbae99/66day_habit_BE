@@ -13,7 +13,9 @@ import java.util.Optional;
 public interface HabitRepository extends JpaRepository<Habit, Long> {
 
     Optional<Habit> findByIdAndDeletedAtNull(Long id);
-    Optional<Habit> findByHabitNameAndDeletedAtNull(String habitName);
+
+
+    Optional<Habit> findByMemberIdAndHabitNameAndDeletedAtIsNull(Long memberId, String habitName);
 
     // 유명한 습관 : 관리자의 추가
     @Query(value = "select h from Habit h " +
