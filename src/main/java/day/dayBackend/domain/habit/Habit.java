@@ -42,7 +42,7 @@ public class Habit extends BaseAuditingListener {
     @Column(name = "tag_name")
     private List<String> habitTags = new ArrayList<>();
 
-    private int progress;
+    private int progress; // 1 ~ 66 까지 얼마나 진행했는지에 대한 데이터
 
     @OneToMany(mappedBy = "habit", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HabitRecord> habitRecords = new ArrayList<>();
@@ -71,7 +71,6 @@ public class Habit extends BaseAuditingListener {
         this.fontColor = FontColor.valueOf(fontColor);
     }
 
-
     public void updateBackgroundColor(String backgroundColor) {
         this.backgroundColor = BackgroundColor.valueOf(backgroundColor);
     }
@@ -80,10 +79,15 @@ public class Habit extends BaseAuditingListener {
         this.habitVisibility = HabitVisibility.valueOf(visibility);
     }
 
-
     public void updateHabitTag(List<String> habitTags) {
         this.habitTags.clear();
         this.habitTags.addAll(habitTags);
+    }
+
+    public void updateProgress() {
+        int totalRecords = habitRecords.size();
+        int totalDays = 66; // 전체 날짜 수
+        this.progress = (totalRecords * 100) / totalDays;
     }
 
     public void delete() {
