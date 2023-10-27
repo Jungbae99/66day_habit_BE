@@ -2,6 +2,7 @@ package day.dayBackend.service;
 
 import day.dayBackend.domain.Friendship;
 import day.dayBackend.domain.Member;
+import day.dayBackend.dto.response.FriendDetailResponseDto;
 import day.dayBackend.dto.response.FriendshipResponseDto;
 import day.dayBackend.exception.NotFoundException;
 import day.dayBackend.repository.FriendshipRepository;
@@ -50,6 +51,19 @@ public class FriendshipService {
 
         friendshipRepository.save(friendship);
         return friendship.getId();
+    }
+
+    /**
+     * 친구 상세정보 조회
+     */
+    public FriendDetailResponseDto getFriendDetailById(Long memberId, Long friendId) {
+        Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
+                .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
+
+        Member friend = memberRepository.findByIdAndDeletedAtNull(friendId)
+                .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
+
+        return FriendDetailResponseDto.fromEntity(friend, member);
     }
 
     /**

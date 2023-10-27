@@ -28,18 +28,18 @@ import java.io.IOException;
 @Transactional(readOnly = true)
 public class MemberService {
 
-    private final MemberRepository memberRepository;
-    private final UploadService uploadService;
     private final PasswordEncoder passwordEncoder;
-    private final MemberAuthorityRepository memberAuthorityRepository;
+    private final UploadService uploadService;
+    private final MemberRepository memberRepository;
     private final UploadRepository uploadRepository;
+    private final MemberAuthorityRepository memberAuthorityRepository;
 
     /**
      * 메인페이지 회원정보 조회
      */
-    public MemberResponseDto getMemberById(Long id) {
+    public MemberResponseDto getMemberById(Long memberId) {
         return MemberResponseDto.fromEntity(
-                memberRepository.findByIdAndDeletedAtNull(id).orElseThrow(
+                memberRepository.findByIdAndDeletedAtNull(memberId).orElseThrow(
                         () -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다.")));
     }
 
