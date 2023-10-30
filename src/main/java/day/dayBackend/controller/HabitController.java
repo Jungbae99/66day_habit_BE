@@ -9,8 +9,8 @@ import day.dayBackend.dto.response.habit.HabitDetailResponseDto;
 import day.dayBackend.dto.response.habit.HabitListResponseDto;
 import day.dayBackend.dto.response.habit.HabitUpdateResponseDto;
 import day.dayBackend.exception.NotAuthenticatedException;
+import day.dayBackend.search.HabitSearch;
 import day.dayBackend.service.HabitService;
-import day.dayBackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +27,23 @@ public class HabitController {
 
     private final HabitService habitService;
 
+    /**
+     * 습관 검색 (정렬조건 앞에 -를 붙이면 내림차순, 붙이면 오름차순)
+     */
+    @GetMapping("")
+    public CommonResponseDto<HabitListResponseDto> getHabitListV1(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                                  @RequestParam(value = "limit", required = false, defaultValue = "100") int size,
+                                                                  @RequestParam(value = "search", required = false) String keyword,
+                                                                  @RequestParam(value = "sort", required = false) String sort
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        System.out.println(11111);
+        HabitSearch search = HabitSearch.builder().keyword(keyword).sort(sort).build();
+        System.out.println(22222);
+        return CommonResponseDto.<HabitListResponseDto>builder()
+                .data(habitService.getHabitList(pageable, search))
+                .build();
+    }
 
     /**
      * 습관 더 보기 정보 조회

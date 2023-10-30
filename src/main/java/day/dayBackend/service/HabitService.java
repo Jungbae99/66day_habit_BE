@@ -11,6 +11,8 @@ import day.dayBackend.dto.response.habit.HabitUpdateResponseDto;
 import day.dayBackend.exception.NotFoundException;
 import day.dayBackend.repository.HabitRepository;
 import day.dayBackend.repository.MemberRepository;
+import day.dayBackend.repository.custom.HabitSearchRepoImpl;
+import day.dayBackend.search.HabitSearch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
@@ -19,8 +21,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +30,7 @@ public class HabitService {
 
     private final HabitRepository habitRepository;
     private final MemberRepository memberRepository;
+    private final HabitSearchRepoImpl habitSearchRepoImpl;
 
     /**
      * 습관 생성
@@ -107,6 +108,19 @@ public class HabitService {
         
         habit.delete();
         return habit.getId();
+    }
+
+    /**
+     * 습관 전체 조회
+     */
+    public HabitListResponseDto getHabitList(Pageable pageable, HabitSearch habitSearch) {
+        Page<Habit> habits = habitSearchRepoImpl.findByDeletedAtNull(pageable, habitSearch);
+        return HabitListResponseDto.of(
+                habits.getTotalElements(),
+                habits.getTotalPages(),
+                habits.getContent().stream()
+                        .map(HabitSummaryResponseDto::fromEntity)
+                        .collect(Collectors.toList()));
     }
 
     /**
