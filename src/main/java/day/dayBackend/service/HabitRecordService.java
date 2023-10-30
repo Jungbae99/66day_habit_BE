@@ -99,6 +99,7 @@ public class HabitRecordService {
 
         habit.getHabitRecords().remove(habitRecord);
         habit.updateProgress();
+        habitRecordRepository.delete(habitRecord);
         return dayNumber;
     }
 
