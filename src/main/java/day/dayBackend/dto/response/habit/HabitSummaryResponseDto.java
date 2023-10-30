@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 @Getter
 public class HabitSummaryResponseDto {
 
+    private Long memberId;
     private Long habitId;
     private String habitName;
     private String backgroundColor;
@@ -19,6 +20,7 @@ public class HabitSummaryResponseDto {
 
     public static HabitSummaryResponseDto fromEntity(Habit entity) {
         HabitSummaryResponseDto dto = new HabitSummaryResponseDto();
+        dto.memberId = entity.getMember().getId();
         dto.habitId = entity.getId();
         dto.habitName = entity.getHabitName();
         dto.backgroundColor = entity.getBackgroundColor().toString();

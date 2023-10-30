@@ -1,6 +1,7 @@
 package day.dayBackend.repository;
 
 import day.dayBackend.domain.habit.Habit;
+import day.dayBackend.search.HabitSearch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface HabitRepository extends JpaRepository<Habit, Long> {
+public interface HabitRepository extends JpaRepository<Habit, Long>, HabitSearchRepoCustom {
 
     Optional<Habit> findByIdAndDeletedAtNull(Long id);
 
