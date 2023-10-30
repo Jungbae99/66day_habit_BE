@@ -28,6 +28,7 @@ public class HabitLikesController {
      * 습관 좋아요
      */
     @PostMapping("")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     public CommonResponseDto<Map<String, Long>> createHabitLikesV1(@RequestParam(name = "habitId") Long habitId) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
@@ -39,6 +40,7 @@ public class HabitLikesController {
      * 좋아요 목록 조회
      */
     @GetMapping("")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     public CommonResponseDto<List<HabitLikesResponseDto>> getMyHabitLikesV1(
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "limit", required = false, defaultValue = "100") int size
@@ -54,6 +56,7 @@ public class HabitLikesController {
      * 좋아요 삭제
      */
     @DeleteMapping("/{habitLikesId}")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     public CommonResponseDto<Map<String, Long>> deleteHabitLikesV1(@PathVariable(name = "habitLikesId") Long habitLikesId) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
