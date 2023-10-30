@@ -6,7 +6,7 @@ import lombok.*;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class HabitRecord {
+public class HabitRecord extends BaseAuditingListener {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

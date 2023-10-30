@@ -2,6 +2,7 @@ package day.dayBackend.controller;
 
 import day.dayBackend.config.SecurityUtil;
 import day.dayBackend.dto.response.CommonResponseDto;
+import day.dayBackend.dto.response.FriendDetailResponseDto;
 import day.dayBackend.dto.response.FriendshipResponseDto;
 import day.dayBackend.exception.NotAuthenticatedException;
 import day.dayBackend.service.FriendshipService;
@@ -23,6 +24,19 @@ public class FriendshipController {
 
     private final FriendshipService friendshipService;
     private final MemberService memberService;
+
+    /**
+     * 친구의 회원정보 조회
+     */
+    @GetMapping("")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    public CommonResponseDto<FriendDetailResponseDto> getMyDetailInfoV1(@RequestParam(name = "friendId") Long friendId) {
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
+        return CommonResponseDto.<FriendDetailResponseDto>builder()
+                .data(friendshipService.getFriendDetailById(memberId, friendId))
+                .build();
+    }
+
 
     /**
      * follow 추가

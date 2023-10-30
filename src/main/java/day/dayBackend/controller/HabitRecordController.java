@@ -1,10 +1,12 @@
 package day.dayBackend.controller;
 
+import day.dayBackend.config.SecurityUtil;
 import day.dayBackend.dto.request.habit.HabitRecordRequestDto;
 import day.dayBackend.dto.request.habit.HabitRecordUpdateRequestDto;
 import day.dayBackend.dto.response.habit.HabitRecordResponseDto;
 import day.dayBackend.dto.response.CommonResponseDto;
 import day.dayBackend.dto.response.habit.HabitRecordUpdateResponseDto;
+import day.dayBackend.exception.NotAuthenticatedException;
 import day.dayBackend.service.HabitRecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,8 +41,9 @@ public class HabitRecordController {
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     public CommonResponseDto<Map<String, Integer>> createHabitRecordV1(@PathVariable(name = "habitId") Long habitId,
                                                                        @RequestBody HabitRecordRequestDto dto) {
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<Map<String, Integer>>builder()
-                .data(Map.of("dayNumber", habitRecordService.createHabitRecord(habitId, dto)))
+                .data(Map.of("dayNumber", habitRecordService.createHabitRecord(memberId, habitId, dto)))
                 .build();
     }
 
@@ -52,8 +55,9 @@ public class HabitRecordController {
     public CommonResponseDto<HabitRecordUpdateResponseDto> updateHabitRecordV1(@PathVariable(name = "habitId") Long habitId,
                                                                                @RequestParam(value = "dayNumber") Integer dayNumber,
                                                                                @RequestBody HabitRecordUpdateRequestDto dto) {
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<HabitRecordUpdateResponseDto>builder()
-                .data(habitRecordService.updateRecordV1(habitId, dayNumber, dto))
+                .data(habitRecordService.updateRecordV1(memberId, habitId, dayNumber, dto))
                 .build();
     }
 

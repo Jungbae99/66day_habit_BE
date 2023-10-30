@@ -16,7 +16,9 @@ public interface HabitRecordRepository extends JpaRepository<HabitRecord, Long> 
     @Query("SELECT hr FROM HabitRecord hr WHERE hr.habit.id = :habitId AND hr.habit.deletedAt IS NULL ORDER BY hr.dayNumber ASC")
     List<HabitRecord> getHabitRecords(@Param("habitId") Long habitId);
 
-    @Query("SELECT hr FROM HabitRecord hr WHERE hr.habit.id = :habitId AND hr.dayNumber =:dayNumber AND hr.habit.deletedAt IS NULL")
+    @Query("SELECT hr FROM HabitRecord hr " +
+            "join fetch hr.habit h " +
+            "where hr.id = :habitId and hr.dayNumber = :dayNumber")
     Optional<HabitRecord> findByHabitId(@Param("habitId") Long habitId, @Param("dayNumber") Integer dayNumber);
 
     Optional<HabitRecord> findByHabitIdAndDayNumber(Long habitId, int dayNumber);
