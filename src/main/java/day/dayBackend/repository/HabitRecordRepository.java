@@ -18,7 +18,7 @@ public interface HabitRecordRepository extends JpaRepository<HabitRecord, Long> 
 
     @Query("SELECT hr FROM HabitRecord hr " +
             "join fetch hr.habit h " +
-            "where hr.id = :habitId and hr.dayNumber = :dayNumber")
+            "where h.id = :habitId and hr.dayNumber = :dayNumber")
     Optional<HabitRecord> findByHabitId(@Param("habitId") Long habitId, @Param("dayNumber") Integer dayNumber);
 
     Optional<HabitRecord> findByHabitIdAndDayNumber(Long habitId, int dayNumber);
