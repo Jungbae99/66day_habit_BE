@@ -8,11 +8,6 @@ db_connection = pymysql.connect (
     password = 'habit1102!',
     database = 'habit66',
     charset='utf8mb4'
-#     host = 'localhost',
-#     user = 'sa',
-#     password = '999',
-#     database = '66day',
-#     charset='utf8mb4'
 )
 
 # 크롤링할 웹사이트 URL
@@ -29,19 +24,19 @@ if response.status_code == 200:
     # '습관' 키워드를 포함한 텍스트 내용 찾기
     recommended_habit = []
 
-    # 'h3' 요소를 찾아서 'celebrity'로 저장
+    # 'h3' 요소를 찾아서 'habit_subject'로 저장
     for h3 in soup.find_all('h3'):
-        celebrity = h3.text.strip()
+        habit_subject = h3.text.strip()
 
         # 'ol' 요소를 찾아서 'li'를 'habit_name'으로 저장
         ol = h3.find_next('ol')
         if ol:
             habit_names = [li.text.strip() for li in ol.find_all('li')]
 
-            # 'celebrity'와 'habit_name'을 함께 저장
+            # 'habit_subject'와 'habit_name'을 함께 저장
             for habit_name in habit_names:
                 recommended_habit.append({
-                    'celebrity': celebrity,
+                    'habit_subject': habit_subject,
                     'habit_name': habit_name
                 })
 
@@ -53,8 +48,8 @@ if response.status_code == 200:
         habit_name = data['habit_name']
 
         # 데이터베이스에 데이터 삽입
-        insert_query = "INSERT INTO recommended_habit (celebrity, habit_name) VALUES (%s, %s)"
-        cursor.execute(insert_query, (data['celebrity'], habit_name))
+        insert_query = "INSERT INTO recommended_habit (habit_subject, habit_name) VALUES (%s, %s)"
+        cursor.execute(insert_query, (data['habit_subject'], habit_name))
 
     db_connection.commit()
 

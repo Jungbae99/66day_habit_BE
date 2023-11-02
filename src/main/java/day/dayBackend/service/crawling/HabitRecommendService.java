@@ -1,24 +1,22 @@
-package day.dayBackend.service;
+package day.dayBackend.service.crawling;
 
-import day.dayBackend.domain.habit.RecommendedHabit;
-import day.dayBackend.dto.recommend.HabitRecommendListDto;
-import day.dayBackend.dto.recommend.HabitRecommendResponseDto;
-import day.dayBackend.repository.HabitRecommendRepository;
+import day.dayBackend.domain.crawling.RecommendedHabit;
+import day.dayBackend.dto.crawling.HabitRecommendListDto;
+import day.dayBackend.dto.crawling.HabitRecommendResponseDto;
+import day.dayBackend.repository.crawling.HabitRecommendRepository;
+import day.dayBackend.service.AuthService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -32,15 +30,17 @@ public class HabitRecommendService {
     private final HabitRecommendRepository habitRecommendRepository;
     private boolean isFirstExecution = true;
 
-    @PostConstruct
-    public void executeCardCrawlerOnStartup() {
+    @Transactional
+//    @PostConstruct // Bean 초기화 후에 한 번만 호출 :TODO
+    public void executeHabitCrawlerOnStartup() {
         if (isFirstExecution) {
             executeHabitCrawler();
             isFirstExecution = false;
         }
     }
 
-    @Scheduled(cron = "0 0 4 * * ?", zone = "Asia/Seoul")
+    @Transactional
+    @Scheduled(cron = "0 0 1 */3 * ?", zone = "Asia/Seoul")
     public void executeHabitCrawlerScheduled() {
         executeHabitCrawler();
     }
@@ -100,7 +100,7 @@ public class HabitRecommendService {
                 logger.info("HabitCrawling.py execution succeeded.");
             } else {
                 logger.error("HabitCrawling.py execution failed. Exit code: " + exitCode);
-                logger.error("Error output:\\n" + errorOutput.toString());
+                logger.error("Error output:\\n" + errorOutput);
 
             }
         } catch (InterruptedException | IOException e) {
@@ -109,7 +109,7 @@ public class HabitRecommendService {
     }
 
 
-    public HabitRecommendResponseDto getHabitList(Long memberId, Pageable pageable) {
+    public HabitRecommendResponseDto getHabitList(Pageable pageable) {
         // Python 스크립트 실행
         executeHabitCrawler();
 
