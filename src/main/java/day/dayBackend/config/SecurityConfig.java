@@ -75,6 +75,7 @@ public class SecurityConfig {
                 // 이메일 중복확인
                 .requestMatchers(HttpMethod.GET, "/v1/member/email").permitAll()
 
+                // 습관 조회
                 .requestMatchers(HttpMethod.GET, "/v1/habit/**").permitAll()
                 .anyRequest().authenticated()
 

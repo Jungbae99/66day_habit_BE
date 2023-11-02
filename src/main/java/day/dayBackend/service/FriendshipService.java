@@ -9,6 +9,7 @@ import day.dayBackend.exception.NotFoundException;
 import day.dayBackend.repository.FriendshipRepository;
 import day.dayBackend.repository.HabitRepository;
 import day.dayBackend.repository.MemberRepository;
+import day.dayBackend.repository.custom.MemberRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 public class FriendshipService {
 
     private final MemberRepository memberRepository;
+    private final MemberRepositoryImpl memberRepositoryImpl;
     private final FriendshipRepository friendshipRepository;
     private final HabitRepository habitRepository;
 
@@ -82,6 +84,31 @@ public class FriendshipService {
         return FriendDetailResponseDto.fromFriend(friend, friendHabitList.get(), 0);
     }
 
+    /**
+     * 친구 검색
+     */
+    public FriendDetailResponseDto getFriendDetailBySearch(Long memberId, String search) {
+        Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
+                .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
+
+        Member friend = memberRepositoryImpl.findBySearchAndDeletedAtNull(search)
+                .orElseThrow(() -> new NotFoundException("해당하는 회원을 찾을 수 없습니다."));;
+
+        Optional<List<Habit>> friendHabitList;
+
+        if (friendshipRepository.findByFollowerIdAndFollowingIdAndDeletedAtNull(memberId, friend.getId()).isPresent()) {
+            friendHabitList = habitRepository.findHabitNotPrivate(friend.getId());
+        } else {
+            friendHabitList = habitRepository.findPublicHabits(friend.getId());
+        }
+
+        if (friendshipRepository.findByFollowerIdAndFollowingIdAndDeletedAtNull(memberId, friend.getId()).isPresent()) {
+            return FriendDetailResponseDto.fromFriend(friend, friendHabitList.get(), 1);
+        }
+
+        return FriendDetailResponseDto.fromFriend(friend, friendHabitList.get(), 0);
+    }
+    
     /**
      * 내가 팔로우하는 친구 조회
      */

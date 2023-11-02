@@ -26,14 +26,26 @@ public class FriendshipController {
     private final MemberService memberService;
 
     /**
-     * 친구의 회원정보 조회
+     * 친구의 회원 정보 조회
      */
     @GetMapping("")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public CommonResponseDto<FriendDetailResponseDto> getMyDetailInfoV1(@RequestParam(name = "friendId") Long friendId) {
+    public CommonResponseDto<FriendDetailResponseDto> getFriendInfoV1(@RequestParam(name = "friendId") Long friendId) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<FriendDetailResponseDto>builder()
                 .data(friendshipService.getFriendDetailById(memberId, friendId))
+                .build();
+    }
+
+    /**
+     * 친구 검색
+     */
+    @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    public CommonResponseDto<FriendDetailResponseDto> searchFriendV1(@RequestParam(name = "search") String search) {
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
+        return CommonResponseDto.<FriendDetailResponseDto>builder()
+                .data(friendshipService.getFriendDetailBySearch(memberId, search))
                 .build();
     }
 

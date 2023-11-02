@@ -7,7 +7,7 @@ import com.querydsl.jpa.JPQLQueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import day.dayBackend.domain.habit.Habit;
 import day.dayBackend.domain.habit.QHabit;
-import day.dayBackend.repository.HabitSearchRepoCustom;
+import day.dayBackend.repository.HabitRepositoryCustom;
 import day.dayBackend.search.HabitSearch;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @RequiredArgsConstructor
-public class HabitSearchRepoImpl implements HabitSearchRepoCustom {
+public class HabitRepositoryImpl implements HabitRepositoryCustom {
 
     private final EntityManager em;
 

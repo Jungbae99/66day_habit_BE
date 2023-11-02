@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 @Getter
 public class FriendDetailResponseDto {
 
+    private Long friendId;
     private String username;
     private String introduction;
     private String profileImage;
@@ -20,6 +21,7 @@ public class FriendDetailResponseDto {
 
     public static FriendDetailResponseDto fromFriend(Member friend, List<Habit> habitList, Integer friendCheck) {
         FriendDetailResponseDto dto = new FriendDetailResponseDto();
+        dto.friendId = friend.getId();
         dto.username = friend.getUsername();
         dto.introduction = friend.getIntroduction();
         dto.profileImage = friend.getProfileImage().getUrl();

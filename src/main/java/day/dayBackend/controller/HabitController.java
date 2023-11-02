@@ -37,9 +37,7 @@ public class HabitController {
                                                                   @RequestParam(value = "sort", required = false) String sort
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        System.out.println(11111);
         HabitSearch search = HabitSearch.builder().keyword(keyword).sort(sort).build();
-        System.out.println(22222);
         return CommonResponseDto.<HabitListResponseDto>builder()
                 .data(habitService.getHabitList(pageable, search))
                 .build();
