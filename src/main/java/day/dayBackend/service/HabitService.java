@@ -11,7 +11,7 @@ import day.dayBackend.dto.response.habit.HabitUpdateResponseDto;
 import day.dayBackend.exception.NotFoundException;
 import day.dayBackend.repository.HabitRepository;
 import day.dayBackend.repository.MemberRepository;
-import day.dayBackend.repository.custom.HabitSearchRepoImpl;
+import day.dayBackend.repository.custom.HabitRepositoryImpl;
 import day.dayBackend.search.HabitSearch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
@@ -30,7 +30,7 @@ public class HabitService {
 
     private final HabitRepository habitRepository;
     private final MemberRepository memberRepository;
-    private final HabitSearchRepoImpl habitSearchRepoImpl;
+    private final HabitRepositoryImpl habitSearchRepoImpl;
 
     /**
      * 습관 생성
