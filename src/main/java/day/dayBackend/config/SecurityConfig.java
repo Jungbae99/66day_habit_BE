@@ -77,6 +77,9 @@ public class SecurityConfig {
 
                 // 습관 조회
                 .requestMatchers(HttpMethod.GET, "/v1/habit/**").permitAll()
+                
+                // 랜덤 조회
+                .requestMatchers(HttpMethod.GET, "/v1/recommend/random/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()

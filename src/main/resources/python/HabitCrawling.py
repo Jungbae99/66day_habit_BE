@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import pymysql
+import re
 
 db_connection = pymysql.connect (
     host = 'localhost',
@@ -9,6 +10,9 @@ db_connection = pymysql.connect (
     database = 'habit66',
     charset='utf8mb4'
 )
+
+def trim_habit_subject(subject):
+    return subject.strip()
 
 # 크롤링할 웹사이트 URL
 url = 'https://www.betterup.com/blog/good-habits'
@@ -28,6 +32,9 @@ if response.status_code == 200:
     for h3 in soup.find_all('h3'):
         habit_subject = h3.text.strip()
 
+        cleaned_subject = re.sub(r'[\d.]+', '', habit_subject)
+        cleaned_subject = trim_habit_subject(cleaned_subject)
+
         # 'ol' 요소를 찾아서 'li'를 'habit_name'으로 저장
         ol = h3.find_next('ol')
         if ol:
@@ -36,7 +43,7 @@ if response.status_code == 200:
             # 'habit_subject'와 'habit_name'을 함께 저장
             for habit_name in habit_names:
                 recommended_habit.append({
-                    'habit_subject': habit_subject,
+                    'habit_subject': cleaned_subject,
                     'habit_name': habit_name
                 })
 
