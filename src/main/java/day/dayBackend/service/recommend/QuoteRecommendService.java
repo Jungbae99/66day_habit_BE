@@ -1,10 +1,10 @@
-package day.dayBackend.service.crawling;
+package day.dayBackend.service.recommend;
 
 
-import day.dayBackend.domain.crawling.RecommendedQuote;
-import day.dayBackend.dto.crawling.QuoteRecommendListDto;
-import day.dayBackend.dto.crawling.QuoteRecommendResponseDto;
-import day.dayBackend.repository.crawling.QuoteRecommendRepository;
+import day.dayBackend.domain.recommend.RecommendedQuote;
+import day.dayBackend.dto.recommend.RecommendedQuoteDto;
+import day.dayBackend.dto.recommend.QuoteRecommendResponseDto;
+import day.dayBackend.repository.recommend.QuoteRecommendRepository;
 import day.dayBackend.service.AuthService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +29,13 @@ public class QuoteRecommendService {
 
     private final QuoteRecommendRepository quoteRecommendRepository;
     private boolean isFirstExecution = true;
+
+    /**
+     * 랜덤 명언 조회
+     */
+    public RecommendedQuoteDto getRandomList() {
+        return quoteRecommendRepository.findRandomQuote().map(RecommendedQuoteDto::fromEntity).orElse(null);
+    }
 
     @Transactional
     @PostConstruct // Bean 초기화 후에 한 번만 호출
@@ -120,7 +127,7 @@ public class QuoteRecommendService {
                 quotes.getTotalElements(),
                 quotes.getTotalPages(),
                 quotes.getContent()
-                        .stream().map(QuoteRecommendListDto::fromEntity)
+                        .stream().map(RecommendedQuoteDto::fromEntity)
                         .collect(Collectors.toList()));
     }
 

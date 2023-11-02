@@ -1,4 +1,4 @@
-package day.dayBackend.domain.crawling;
+package day.dayBackend.domain.recommend;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,18 +8,16 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-
 @Entity
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class RecommendedHabit {
+public class RecommendedQuote {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String habitSubject;
+    private String wiseSaying;
 
-    private String habitName;
-
+    private String greatPerson;
 }

@@ -21,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/api/recommend")
+@RequestMapping("/v1/recommend")
 public class RecommendController {
 
     private final HabitRecommendService habitRecommendService;

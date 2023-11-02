@@ -1,9 +1,9 @@
-package day.dayBackend.service.crawling;
+package day.dayBackend.service.recommend;
 
-import day.dayBackend.domain.crawling.RecommendedHabit;
-import day.dayBackend.dto.crawling.HabitRecommendListDto;
-import day.dayBackend.dto.crawling.HabitRecommendResponseDto;
-import day.dayBackend.repository.crawling.HabitRecommendRepository;
+import day.dayBackend.domain.recommend.RecommendedHabit;
+import day.dayBackend.dto.recommend.RecommendedHabitDto;
+import day.dayBackend.dto.recommend.HabitRecommendResponseDto;
+import day.dayBackend.repository.recommend.HabitRecommendRepository;
 import day.dayBackend.service.AuthService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -30,8 +32,18 @@ public class HabitRecommendService {
     private final HabitRecommendRepository habitRecommendRepository;
     private boolean isFirstExecution = true;
 
+    /**
+     * 랜덤 습관 조회
+     */
+    public List<RecommendedHabitDto> getRandomList() {
+        return habitRecommendRepository.findRandomHabit().orElse(Collections.emptyList())
+                .stream().map(RecommendedHabitDto::fromEntity).collect(Collectors.toList());
+
+    }
+
+
     @Transactional
-//    @PostConstruct // Bean 초기화 후에 한 번만 호출 :TODO
+    @PostConstruct
     public void executeHabitCrawlerOnStartup() {
         if (isFirstExecution) {
             executeHabitCrawler();
@@ -120,7 +132,7 @@ public class HabitRecommendService {
                 habits.getTotalElements(),
                 habits.getTotalPages(),
                 habits.getContent()
-                        .stream().map(HabitRecommendListDto::fromEntity)
+                        .stream().map(RecommendedHabitDto::fromEntity)
                         .collect(Collectors.toList()));
     }
 

@@ -1,4 +1,4 @@
-package day.dayBackend.dto.crawling;
+package day.dayBackend.dto.recommend;
 
 import lombok.Getter;
 
@@ -9,10 +9,10 @@ public class QuoteRecommendResponseDto {
 
     private Long totalRows; // 습관 수
     private Long totalPages; // 페이지 수
-    List<QuoteRecommendListDto> quoteRecommendList;
+    List<RecommendedQuoteDto> quoteRecommendList;
 
 
-    public static QuoteRecommendResponseDto of(long totalPages, long totalRows, List<QuoteRecommendListDto> quoteRecommendList) {
+    public static QuoteRecommendResponseDto of(long totalPages, long totalRows, List<RecommendedQuoteDto> quoteRecommendList) {
         QuoteRecommendResponseDto dto = new QuoteRecommendResponseDto();
         dto.totalPages = totalPages;
         dto.totalRows = totalRows;
