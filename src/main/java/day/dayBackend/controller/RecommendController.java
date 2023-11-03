@@ -38,7 +38,7 @@ public class RecommendController {
     }
 
     /**
-     * 랜덤 습관 조회
+     * 랜덤 명언 조회
      */
     @GetMapping("/random/quote")
     public CommonResponseDto<RecommendedQuoteDto> getRandomQuoteV1() {

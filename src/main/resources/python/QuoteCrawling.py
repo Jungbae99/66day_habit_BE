@@ -22,18 +22,22 @@ if response.status_code == 200:
     # 'p' 태그를 찾아서 명언과 위인 이름 추출
     p_tags = soup.find_all('p')
     for p_tag in p_tags:
+        br_tag = p_tag.find('br')
 
-        wise_saying = p_tag.text
-        great_person_tag = p_tag.find('b')
+        if br_tag:  # br 태그가 있는 경우에만 추출
+            wise_saying = br_tag.previous_sibling.strip()
+            great_person_tag = br_tag.find_next('b')
 
-        if great_person_tag:  # b 태그가 있는 경우에만 추출
-            great_person = great_person_tag.text
+            if great_person_tag:
+                great_person = great_person_tag.text.strip()
+            else:
+                great_person = ""
 
             # Wise saying와 Great person 값이 둘 다 공백이 아닌 경우에만 추가
-            if wise_saying.strip() and great_person.strip():
+            if wise_saying and great_person:
                 quotes.append({
-                    'wise_saying': wise_saying.strip(),
-                    'great_person': great_person.strip()
+                    'wise_saying': wise_saying,
+                    'great_person': great_person
                 })
     cursor = db_connection.cursor()
 
