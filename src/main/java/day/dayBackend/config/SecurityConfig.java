@@ -73,7 +73,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/v1/member/direct").permitAll()
 
                 // 이메일 중복확인
-                .requestMatchers(HttpMethod.GET, "/v1/member/email").permitAll()
+                .requestMatchers(HttpMethod.GET, "/v1/member/email/**").permitAll()
 
                 // 습관 조회
                 .requestMatchers(HttpMethod.GET, "/v1/habit/**").permitAll()
