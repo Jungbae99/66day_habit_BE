@@ -25,4 +25,11 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
             "where m.id = :memberId " +
             "and m.deletedAt is null ")
     Optional<Member> findByIdWithHabit(@Param("memberId") Long memberId);
+
+    @Query(value = "select m from Member m " +
+            "join fetch m.profileImage mp " +
+            "join fetch m.backgroundImage mb " +
+            "where m.id = :memberId " +
+            "and m.deletedAt is null")
+    Optional<Member> findByIdWithUpload(@Param("memberId") Long memberId);
 }
