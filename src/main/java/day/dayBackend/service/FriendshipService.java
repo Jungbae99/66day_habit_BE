@@ -70,18 +70,17 @@ public class FriendshipService {
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
 
         Optional<List<Habit>> friendHabitList;
+        boolean friendCheck = false;
 
         if (friendshipRepository.findByFollowerIdAndFollowingIdAndDeletedAtNull(memberId, friendId).isPresent()) {
             friendHabitList = habitRepository.findHabitNotPrivate(friendId);
+            // 친구일 때 true;
+            friendCheck = true;
         } else {
             friendHabitList = habitRepository.findPublicHabits(friendId);
         }
 
-        if (friendshipRepository.findByFollowerIdAndFollowingIdAndDeletedAtNull(memberId, friendId).isPresent()) {
-            return FriendDetailResponseDto.fromFriend(friend, friendHabitList.get(), 1);
-        }
-
-        return FriendDetailResponseDto.fromFriend(friend, friendHabitList.get(), 0);
+        return FriendDetailResponseDto.fromFriend(friend, friendHabitList.get(), friendCheck);
     }
 
     /**
@@ -96,17 +95,17 @@ public class FriendshipService {
 
         Optional<List<Habit>> friendHabitList;
 
+        boolean friendCheck = false;
+        // 친구일 때
         if (friendshipRepository.findByFollowerIdAndFollowingIdAndDeletedAtNull(memberId, friend.getId()).isPresent()) {
             friendHabitList = habitRepository.findHabitNotPrivate(friend.getId());
+            friendCheck = true;
+        // 친구가 아닐 때
         } else {
             friendHabitList = habitRepository.findPublicHabits(friend.getId());
         }
 
-        if (friendshipRepository.findByFollowerIdAndFollowingIdAndDeletedAtNull(memberId, friend.getId()).isPresent()) {
-            return FriendDetailResponseDto.fromFriend(friend, friendHabitList.get(), 1);
-        }
-
-        return FriendDetailResponseDto.fromFriend(friend, friendHabitList.get(), 0);
+        return FriendDetailResponseDto.fromFriend(friend, friendHabitList.get(), friendCheck);
     }
     
     /**
@@ -125,15 +124,15 @@ public class FriendshipService {
      * 친구 삭제
      */
     @Transactional
-    public Long deleteFriend(Long memberId, Long followId) {
+    public Long deleteFriend(Long memberId, Long friendId) {
 
-        if (memberId.equals(followId)) {
+        if (memberId.equals(friendId)) {
             throw new IllegalArgumentException("자신을 팔로우 할 수 없습니다.");
         }
         memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
 
-        Friendship friendship = friendshipRepository.findFriendshipByFollowingIdAndDeletedAtNull(followId)
+        Friendship friendship = friendshipRepository.findFriendshipByFollowingIdAndDeletedAtNull(friendId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 친구입니다."));
 
         friendship.delete();

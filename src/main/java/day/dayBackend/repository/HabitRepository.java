@@ -38,10 +38,16 @@ public interface HabitRepository extends JpaRepository<Habit, Long>, HabitReposi
     Page<Habit> findDoneHabit(Pageable pageable);
 
     // 친구일 때는 private 한 것을 제외하고 볼 수 있습니다.
-    @Query(value = "select h from Habit h where h.member.id = :memberId and h.habitVisibility <> 'PRIVATE' and h.deletedAt is null order by h.createdAt desc")
+    @Query(value = "select h from Habit h " +
+            "where h.member.id = :memberId " +
+            "and h.habitVisibility <> 'PRIVATE' " +
+            "and h.deletedAt is null order by h.createdAt desc")
     Optional<List<Habit>> findHabitNotPrivate(@Param("memberId") Long friendId);
 
     // 친구가 아닐 때는 public 한 것만 볼 수 있습니다.
-    @Query(value = "select h from Habit h where h.member.id = :memberId and h.habitVisibility = 'PUBLIC' and h.deletedAt is null order by h.createdAt desc")
+    @Query(value = "select h from Habit h " +
+            "where h.member.id = :memberId and " +
+            "h.habitVisibility = 'PUBLIC' and " +
+            "h.deletedAt is null order by h.createdAt desc")
     Optional<List<Habit>> findPublicHabits(@Param("memberId") Long friendId);
 }
