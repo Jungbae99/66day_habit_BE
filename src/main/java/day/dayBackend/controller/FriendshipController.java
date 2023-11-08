@@ -81,12 +81,12 @@ public class FriendshipController {
     /**
      * 친구 삭제
      */
-    @DeleteMapping("/{followId}")
+    @DeleteMapping("/{friendId}")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public CommonResponseDto<Map<String, Long>> deleteFriendV1(@PathVariable(name = "followId") Long followId) {
+    public CommonResponseDto<Map<String, Long>> deleteFriendV1(@PathVariable(name = "friendId") Long friendId) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
-                .data(Map.of("followId", friendshipService.deleteFriend(memberId, followId)))
+                .data(Map.of("followId", friendshipService.deleteFriend(memberId, friendId)))
                 .build();
     }
 }

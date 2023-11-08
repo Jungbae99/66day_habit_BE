@@ -39,7 +39,7 @@ public class MemberService {
      */
     public MemberResponseDto getMemberById(Long memberId) {
         return MemberResponseDto.fromEntity(
-                memberRepository.findByIdAndDeletedAtNull(memberId).orElseThrow(
+                memberRepository.findByIdWithHabit(memberId).orElseThrow(
                         () -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다.")));
     }
 
@@ -48,7 +48,7 @@ public class MemberService {
      */
     public MemberDetailResponseDto getMemberDetailById(Long id) {
         return MemberDetailResponseDto.fromEntity(
-                memberRepository.findByIdAndDeletedAtNull(id).orElseThrow(
+                memberRepository.findByIdWithUpload(id).orElseThrow(
                         () -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다")));
     }
 

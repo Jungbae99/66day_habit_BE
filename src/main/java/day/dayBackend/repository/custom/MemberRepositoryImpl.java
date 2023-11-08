@@ -28,6 +28,8 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
         BooleanExpression searchCondition = member.email.eq(search).or(member.username.eq(search));
 
         Member result = queryFactory.selectFrom(member)
+                .leftJoin(member.profileImage).fetchJoin()
+                .leftJoin(member.backgroundImage).fetchJoin()
                 .where(searchCondition.and(member.deletedAt.isNull()))
                 .fetchOne();
 
