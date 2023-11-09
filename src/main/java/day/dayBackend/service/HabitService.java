@@ -111,7 +111,7 @@ public class HabitService {
     }
 
     /**
-     * 습관 전체 조회
+     * 습관 검색
      */
     public HabitListResponseDto getHabitList(Pageable pageable, HabitSearch habitSearch) {
         Page<Habit> habits = habitSearchRepoImpl.findByDeletedAtNull(pageable, habitSearch);
@@ -124,12 +124,11 @@ public class HabitService {
     }
 
     /**
-     * 습관 세부정보 조회
+     * 습관 더보기 조회
      */
     public HabitDetailResponseDto getHabitDetail(Long habitId) {
         Habit habit = habitRepository.findByIdAndDeletedAtNull(habitId)
                 .orElseThrow(() -> new NotFoundException("해당하는 습관이 존재하지 않습니다."));
-        habit.updateProgress();
 
         return HabitDetailResponseDto.fromEntity(habit);
     }

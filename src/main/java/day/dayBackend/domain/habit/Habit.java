@@ -88,8 +88,7 @@ public class Habit extends BaseAuditingListener {
 
     public void updateProgress() {
         int totalRecords = habitRecords.size();
-        int totalDays = 66; // 전체 날짜 수
-        this.progress = (totalRecords * 100) / totalDays;
+        this.progress = (totalRecords * 100) / 66;
     }
 
     public void delete() {
