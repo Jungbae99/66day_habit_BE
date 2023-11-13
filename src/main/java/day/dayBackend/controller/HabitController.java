@@ -33,11 +33,12 @@ public class HabitController {
     @GetMapping("")
     public CommonResponseDto<HabitListResponseDto> getHabitListV1(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                                   @RequestParam(value = "limit", required = false, defaultValue = "100") int size,
-                                                                  @RequestParam(value = "search", required = false) String keyword,
+                                                                  @RequestParam(value = "search1", required = false) String keyword1,
+                                                                  @RequestParam(value = "search2", required = false) String keyword2,
                                                                   @RequestParam(value = "sort", required = false) String sort
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        HabitSearch search = HabitSearch.builder().keyword(keyword).sort(sort).build();
+        HabitSearch search = HabitSearch.builder().keyword1(keyword1).keyword2(keyword2).sort(sort).build();
         return CommonResponseDto.<HabitListResponseDto>builder()
                 .data(habitService.getHabitList(pageable, search))
                 .build();

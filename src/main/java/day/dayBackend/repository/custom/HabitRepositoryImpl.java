@@ -1,6 +1,7 @@
 package day.dayBackend.repository.custom;
 
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.JPQLQueryFactory;
@@ -32,7 +33,10 @@ public class HabitRepositoryImpl implements HabitRepositoryCustom {
         QHabit qHabit = QHabit.habit;
 
         JPQLQuery<Habit> query = queryFactory.selectFrom(qHabit)
-                .where(containsNameOrTag(qHabit, search))
+                .where(
+                        containsNameOrTag(qHabit, search.getKeyword1())
+                                .and(containsNameOrTag(qHabit, search.getKeyword2()))
+                )
                 .orderBy(orderByCreatedAt(search.getSort()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
@@ -42,15 +46,14 @@ public class HabitRepositoryImpl implements HabitRepositoryCustom {
 
 
     /**
-     * 검색조건은 BooleanExpression
+     * 검색조건 1 BooleanExpression
      */
-    private BooleanExpression containsNameOrTag(QHabit habit, HabitSearch search) {
-        String keyword = search.getKeyword();
-        if (keyword == null || keyword.isEmpty()) {
+    private BooleanExpression containsNameOrTag(QHabit habit, String search) {
+        if (search == null || search.isEmpty()) {
             return null;
         }
-        BooleanExpression nameExpression = habit.habitName.like("%" + keyword + "%");
-        BooleanExpression tagExpression = habit.habitTags.any().like("%" + keyword + "%");
+        BooleanExpression nameExpression = habit.habitName.like("%" + search + "%");
+        BooleanExpression tagExpression = habit.habitTags.any().like("%" + search + "%");
         return nameExpression.or(tagExpression);
     }
 

@@ -8,6 +8,7 @@ import lombok.Getter;
 @Builder
 public class HabitSearch {
 
-    private String keyword;
+    private String keyword1;
+    private String keyword2;
     private String sort;
 }
