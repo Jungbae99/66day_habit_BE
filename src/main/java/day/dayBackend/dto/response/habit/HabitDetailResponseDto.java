@@ -11,12 +11,14 @@ import java.util.List;
 @Getter
 public class HabitDetailResponseDto {
 
+    private String habitName;
     private int progress;
     private AchievementRateDto achievementRates;
     private boolean isTodayChecked;
 
     public static HabitDetailResponseDto fromEntity(Habit habit) {
         HabitDetailResponseDto dto = new HabitDetailResponseDto();
+        dto.habitName = habit.getHabitName();
         dto.progress = habit.getProgress();
         dto.achievementRates = AchievementRateDto.fromEntity(habit);
         dto.isTodayChecked = dto.hasCheckToday(habit.getHabitRecords()) ? true : false;

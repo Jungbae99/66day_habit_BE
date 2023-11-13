@@ -4,7 +4,6 @@ import day.dayBackend.domain.habit.Habit;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class HabitSummaryResponseDto {
@@ -14,6 +13,8 @@ public class HabitSummaryResponseDto {
     private String habitName;
     private String backgroundColor;
     private String fontColor;
+    private Integer progress;
+    private String habitVisibility;
     private List<String> habitTags;
 
     public static HabitSummaryResponseDto fromEntity(Habit entity) {
@@ -23,6 +24,8 @@ public class HabitSummaryResponseDto {
         dto.habitName = entity.getHabitName();
         dto.backgroundColor = entity.getBackgroundColor().toString();
         dto.fontColor = entity.getFontColor().toString();
+        dto.progress = entity.getProgress();
+        dto.habitVisibility = String.valueOf(entity.getHabitVisibility());
         dto.habitTags = entity.getHabitTags();
         return dto;
     }
