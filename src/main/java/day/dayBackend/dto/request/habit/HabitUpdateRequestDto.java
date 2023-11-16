@@ -8,14 +8,14 @@ import java.util.List;
 @Getter
 public class HabitUpdateRequestDto {
 
-    private JsonNullable<String> backgroundColor;
+    private JsonNullable<String> backgroundColor = JsonNullable.undefined();
 
-    private JsonNullable<String> fontColor;
+    private JsonNullable<String> fontColor = JsonNullable.undefined();
 
-    private JsonNullable<String> habitName;
+    private JsonNullable<String> habitName = JsonNullable.undefined();
 
-    private JsonNullable<String> habitVisibility;
+    private JsonNullable<String> habitVisibility = JsonNullable.undefined();
 
-    private JsonNullable<List<String>> habitTag;
+    private JsonNullable<List<String>> habitTag = JsonNullable.undefined();
 
 }
