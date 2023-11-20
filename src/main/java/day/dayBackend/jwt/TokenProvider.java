@@ -10,13 +10,13 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -132,10 +132,27 @@ public class TokenProvider implements InitializingBean {
         return false;
     }
 
+    /**
+     * socket 연결을 위한 jwt 검증
+     */
+    public void validateTokenForStomp(final String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(accessKey).build().parseClaimsJws(token);
+        } catch (SecurityException | MalformedJwtException e) {
+            throw new MalformedJwtException("잘못된 JWT 서명입니다.");
+        } catch (ExpiredJwtException e) {
+            throw new MalformedJwtException("만료된 JWT 토큰입니다.");
+        } catch (UnsupportedJwtException e) {
+            throw new MalformedJwtException("지원되지 않은 JWT 토큰입니다.");
+        } catch (IllegalArgumentException e) {
+            throw new MalformedJwtException("JWT 토큰이 잘못되었습니다.");
+        }
+    }
+
 
     /**
      * 쿠키 생성
-     */   
+     */
     private ResponseCookie generateCookie(String name, String value, String path, boolean secure, String sameSite, long refreshTokenValidityTime) {
         ResponseCookie cookie = ResponseCookie.from(name, value)
                 .path(path)
@@ -213,5 +230,9 @@ public class TokenProvider implements InitializingBean {
             throw new AccessDeniedException("INVALID_TOKEN");
         }
         return claims.get("memberId", Long.class);
+    }
+
+    public String extractJwt(final StompHeaderAccessor accessor) {
+        return accessor.getFirstNativeHeader("Authorization");
     }
 }
