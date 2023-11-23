@@ -59,7 +59,6 @@ public class ChatRoomService {
      * 채팅 메시지를 저장한다.
      */
     private void chatMessageSave(Member sender, Member receiver, ChatRoom chatRoom, MessageRequestDto dto) {
-        System.out.println("dto.getData() = " + dto.getContent());
         ChatMessage chatMessage = ChatMessage.builder()
                 .sender(sender)
                 .receiver(receiver)

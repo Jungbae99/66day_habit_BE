@@ -21,16 +21,13 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // Stomp 웹소켓 엔드포인트 등록
         registry.addEndpoint("/ws")
                 .setAllowedOriginPatterns("*");
-
         registry.setErrorHandler(stompExceptionHandler);
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        // 메시지 브로커 구성
         registry.enableSimpleBroker("/sub");
         registry.setApplicationDestinationPrefixes("/pub");
     }

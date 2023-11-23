@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,8 +20,7 @@ public class StompController {
     private final ChatRoomService chatService;
 
     @MessageMapping("/chat")
-    public void message(MessageRequestDto message, SimpMessageHeaderAccessor headerAccessor) {
-
+    public void message(MessageRequestDto message) {
         simpMessageSendingOperations.convertAndSend("/sub/channel/" + message.getReceiverId(), message);
         chatService.chatRoomSave(message);
     }
