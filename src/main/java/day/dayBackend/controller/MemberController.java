@@ -103,6 +103,18 @@ public class MemberController {
     }
 
     /**
+     * 회원 PK조회
+     */
+    @GetMapping("/id")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    public CommonResponseDto<Map<String, Long>> getMemberIdV1() {
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
+        return CommonResponseDto.<Map<String, Long>>builder()
+                .data(Map.of("memberId", memberId))
+                .build();
+    }
+
+    /**
      * 이메일 조회
      */
     @GetMapping("/email")
