@@ -11,14 +11,13 @@ public class MemberDirectCreateRequestDto {
 
 //  :TODO
     @Email(message = "{validation.Pattern.email}")
-    @NotBlank(message = "{validation.NotBlank}")
     private String email;
 
-//    @NotNull(message = "{validation.NotNull}")
-//    @Size(min = 8, max = 24, message = "{validation.Size}")
+    @NotBlank(message = "{validation.NotBlank}")
+    @Size(min = 8, max = 24, message = "{validation.Size}")
     private String password;
 
-//    @NotNull(message = "{validation.NotNull}")
+    @NotBlank(message = "{validation.NotBlank}")
     private String username;
 
     private String introduction;

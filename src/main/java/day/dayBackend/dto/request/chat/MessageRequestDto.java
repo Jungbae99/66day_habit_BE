@@ -1,5 +1,7 @@
 package day.dayBackend.dto.request.chat;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,9 +14,13 @@ import lombok.NoArgsConstructor;
 public class MessageRequestDto {
 
     private String type;
-    private Long senderId;
-    private Long receiverId;
-    private String content;
 
+    @NotBlank(message = "{validation.NotBlank}")
+    private Long senderId;
+
+    @NotBlank(message = "{validation.NotBlank}")
+    private Long receiverId;
+
+    private String content;
 
 }
