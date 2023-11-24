@@ -1,10 +1,7 @@
 package day.dayBackend.domain.authority;
 
 import day.dayBackend.domain.habit.BaseAuditingListener;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +15,7 @@ public class Authority extends BaseAuditingListener {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String authorityName;
 
     public static Authority createAuthority(String authorityName) {

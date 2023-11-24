@@ -2,6 +2,7 @@ package day.dayBackend.controller;
 
 import day.dayBackend.dto.request.chat.MessageRequestDto;
 import day.dayBackend.service.ChatRoomService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,7 +21,7 @@ public class StompController {
     private final ChatRoomService chatService;
 
     @MessageMapping("/chat")
-    public void message(MessageRequestDto message) {
+    public void message(@Valid MessageRequestDto message) {
         simpMessageSendingOperations.convertAndSend("/sub/channel/" + message.getReceiverId(), message);
         chatService.chatRoomSave(message);
     }
