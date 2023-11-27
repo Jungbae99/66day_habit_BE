@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Entity
@@ -23,6 +24,9 @@ public class ChatRoom {
 
     @OneToOne(fetch = FetchType.LAZY)
     private Member receiver;
+
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    List<ChatMessage> chatMessageList;
 
     private LocalDateTime senderDeletedAt;
 

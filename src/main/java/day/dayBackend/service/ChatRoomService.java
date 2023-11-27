@@ -45,8 +45,8 @@ public class ChatRoomService {
                     .receiver(receiver)
                     .build();
 
-            chatMessageSave(sender, receiver, chatRoom, dto);
             chatRoomRepository.save(chatRoom);
+            chatMessageSave(sender, receiver, chatRoom, dto);
         } else {
             ChatRoom chatRoom = chatRoomRepository.findBySenderAndReceiver(dto.getSenderId(), dto.getReceiverId())
                     .orElseThrow(() -> new NotFoundException("id에 해당하는 채팅방이 존재하지 않습니다."));
