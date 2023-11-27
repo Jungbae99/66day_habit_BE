@@ -10,6 +10,7 @@ import lombok.Getter;
 public class MemberDirectCreateRequestDto {
 
 //  :TODO
+    @NotBlank(message = "{validation.NotBlank}")
     @Email(message = "{validation.Pattern.email}")
     private String email;
 

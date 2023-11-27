@@ -7,10 +7,10 @@ import lombok.Getter;
 @Getter
 public class HabitRecordRequestDto {
 
-    @NotBlank
+    @NotNull
     private int dayNumber;
 
-    @NotBlank
+    @NotNull
     private int achievementRate;
 
 }

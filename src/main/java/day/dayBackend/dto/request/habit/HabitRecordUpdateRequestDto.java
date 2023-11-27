@@ -1,12 +1,13 @@
 package day.dayBackend.dto.request.habit;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
 public class HabitRecordUpdateRequestDto {
 
-    @NotBlank(message = "{validation.NotBlank}")
+    @NotNull(message = "{validation.NotNull}")
     private int achievementRate;
 
 }

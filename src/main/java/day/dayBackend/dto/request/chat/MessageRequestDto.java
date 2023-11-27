@@ -15,10 +15,10 @@ public class MessageRequestDto {
 
     private String type;
 
-    @NotBlank(message = "{validation.NotBlank}")
+    @NotNull(message = "{validation.NotNull}")
     private Long senderId;
 
-    @NotBlank(message = "{validation.NotBlank}")
+    @NotNull(message = "{validation.NotNull}")
     private Long receiverId;
 
     private String content;
