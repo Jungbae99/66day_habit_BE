@@ -23,6 +23,9 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
 
+    /**
+     * 채팅메시지 조회 
+     */
     public ChatMessageResponseDto findAllMessage(Long chatRoomId, Long memberId, Pageable pageable) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 채팅방이 존재하지 않습니다."));

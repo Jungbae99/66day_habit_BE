@@ -29,7 +29,8 @@ public class ChatMessageRepositoryImpl implements ChatMessageRepositoryCustom {
         QChatMessage chatMessage = QChatMessage.chatMessage;
 
         JPQLQuery<ChatMessage> query = queryFactory.selectFrom(chatMessage)
-                .where(compareMemberId(memberId, chatRoom, chatMessage))
+                .where(chatMessage.chatRoom.eq(chatRoom)
+                        .and(compareMemberId(memberId, chatRoom, chatMessage)))
                 .orderBy(chatMessage.createdAt.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
