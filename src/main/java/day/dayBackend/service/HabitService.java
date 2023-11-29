@@ -21,6 +21,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -130,7 +133,10 @@ public class HabitService {
         Habit habit = habitRepository.findByIdAndDeletedAtNull(habitId)
                 .orElseThrow(() -> new NotFoundException("해당하는 습관이 존재하지 않습니다."));
 
-        return HabitDetailResponseDto.fromEntity(habit);
+        boolean todayCheck = checkTodayDone(habit.getHabitRecords());
+        int inspireDay = checkInspire(habit);
+
+        return HabitDetailResponseDto.of(habit, todayCheck, inspireDay);
     }
 
     /**
@@ -182,5 +188,40 @@ public class HabitService {
                 });
     }
 
-    
+    /**
+     * 당일 습관 체크 여부 확인
+     */
+    private boolean checkTodayDone(List<HabitRecord> habitRecords) {
+        LocalDateTime time = LocalDateTime.now();
+        for (HabitRecord habitRecord : habitRecords) {
+            if (time.getDayOfYear() == habitRecord.getCreatedAt().getDayOfYear()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 3, 7, 14일 확인
+     */
+    private int checkInspire(Habit habit) {
+
+        LocalDateTime habitTime = habit.getCreatedAt();
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        long between = ChronoUnit.HOURS.between(habitTime, currentTime);
+        int recordsAllowed = (int) ((between / 24) + 1);
+
+        if (recordsAllowed == 3) {
+            return 3;
+        } else if (recordsAllowed == 7) {
+            return 7;
+        } else if (recordsAllowed == 14) {
+            return 14;
+        } else {
+            return 0;
+        }
+    }
+
+
 }

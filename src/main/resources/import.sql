@@ -44,7 +44,10 @@ insert into habit_tags (habit_id, tag_name) values (7, '건강');
 
 --
 
-insert into habit (background_color, created_at, deleted_at, font_color, habit_name, habit_visibility, member_id, progress, update_at) values ('DARKBLUE', '2023-11-09T23:02:46', NULL, 'WHITE', '프로젝트 열심히 하기', 'PUBLIC', 1, 100, '2023-11-09T23:02:46');
+insert into habit (background_color, created_at, deleted_at, font_color, habit_name, habit_visibility, member_id, progress, update_at) values ('DARKBLUE', '2023-11-09T18:02:46', NULL, 'WHITE', '프로젝트 열심히 하기', 'PUBLIC', 1, 100, NULL);
+insert into habit (background_color, created_at, deleted_at, font_color, habit_name, habit_visibility, member_id, progress, update_at) values ('PINK', '2023-11-27T18:02:46', NULL, 'BLACK', '3일 테스트', 'PUBLIC', 1, 6, NULL);
+insert into habit (background_color, created_at, deleted_at, font_color, habit_name, habit_visibility, member_id, progress, update_at) values ('LIGHTGREEN', '2023-11-23T18:02:46', NULL, 'WHITE', '7일 테스트', 'PUBLIC', 1, 6, NULL);
+insert into habit (background_color, created_at, deleted_at, font_color, habit_name, habit_visibility, member_id, progress, update_at) values ('MINT', '2023-11-16T18:02:46', NULL, 'BLACK', '14일 테스트', 'PUBLIC', 1, 6, NULL);
 
 
 insert into habit_record (`achievement_rate`, `created_at`, `day_number`, `deleted_at`, `habit_id`, `update_at`) values (100, '2023-10-11 00:00:00.123456', 1, NULL, 1, '2023-10-11 00:00:00.123456');
