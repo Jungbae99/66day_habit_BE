@@ -18,10 +18,9 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     Optional<Member> findByUsernameAndDeletedAtNull(String username);
 
     @Query(value = "select m from Member m " +
-            "left join m.habitList mh " +
-            "left join mh.habitRecords hr " +
-            "join fetch m.profileImage mp " +
-            "join fetch m.backgroundImage mb " +
+            "left join fetch m.habitList mh " +
+            "left join fetch m.profileImage " +
+            "left join fetch m.backgroundImage " +
             "where m.id = :memberId " +
             "and m.deletedAt is null ")
     Optional<Member> findByIdWithHabit(@Param("memberId") Long memberId);

@@ -36,7 +36,7 @@ public class SignInService {
 
         String encoded = passwordEncoder.encode(dto.getPassword());
         Upload profileImage = uploadRepository.findByIdAndDeletedAtNull(1L).orElseThrow(NotFoundException::new);
-        Upload backgroundImage = uploadRepository.findByIdAndDeletedAtNull(1L).orElseThrow(NotFoundException::new);
+        Upload backgroundImage = uploadRepository.findByIdAndDeletedAtNull(2L).orElseThrow(NotFoundException::new);
 
         Member member = Member.builder()
                 .email(dto.getEmail())
