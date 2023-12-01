@@ -11,20 +11,22 @@ import java.util.stream.Collectors;
 @Getter
 public class FriendDetailResponseDto {
 
+    private Long friendId;
     private String username;
     private String introduction;
     private String profileImage;
     private String backgroundImage;
-    private Integer friendShipId;
-    private List<HabitSummaryResponseDto> friendHabitList; // :TODO
+    private Integer isFriend;
+    private List<HabitSummaryResponseDto> friendHabitList;
 
-    public static FriendDetailResponseDto fromFriend(Member friend, List<Habit> habitList, Integer friendCheck) {
+    public static FriendDetailResponseDto fromFriend(Member friend, List<Habit> habitList, boolean friendCheck) {
         FriendDetailResponseDto dto = new FriendDetailResponseDto();
+        dto.friendId = friend.getId();
         dto.username = friend.getUsername();
         dto.introduction = friend.getIntroduction();
         dto.profileImage = friend.getProfileImage().getUrl();
         dto.backgroundImage = friend.getBackgroundImage().getUrl();
-        dto.friendShipId = friendCheck == 1 ? 1 : 0;
+        dto.isFriend = friendCheck == true ? 1 : 0;
         dto.friendHabitList = habitList.stream()
                 .map(habit -> HabitSummaryResponseDto.fromEntity(habit))
                 .collect(Collectors.toList());

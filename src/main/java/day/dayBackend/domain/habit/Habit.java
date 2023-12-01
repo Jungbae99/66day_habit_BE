@@ -46,7 +46,7 @@ public class Habit extends BaseAuditingListener {
 
     private int progress; // 1 ~ 66 까지 얼마나 진행했는지에 대한 데이터
 
-    @OneToMany(mappedBy = "habit" )
+    @OneToMany(mappedBy = "habit", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HabitRecord> habitRecords = new ArrayList<>();
 
     @OneToMany(mappedBy = "habit", orphanRemoval = true)
@@ -88,8 +88,7 @@ public class Habit extends BaseAuditingListener {
 
     public void updateProgress() {
         int totalRecords = habitRecords.size();
-        int totalDays = 66; // 전체 날짜 수
-        this.progress = (totalRecords * 100) / totalDays;
+        this.progress = (totalRecords * 100) / 66;
     }
 
     public void delete() {

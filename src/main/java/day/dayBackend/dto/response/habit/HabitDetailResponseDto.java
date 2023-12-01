@@ -11,28 +11,20 @@ import java.util.List;
 @Getter
 public class HabitDetailResponseDto {
 
+    private String habitName;
     private int progress;
     private AchievementRateDto achievementRates;
     private boolean isTodayChecked;
+    private int inspireDay;
 
-    public static HabitDetailResponseDto fromEntity(Habit habit) {
+    public static HabitDetailResponseDto of(Habit habit, Boolean isTodayChecked, int inspireDay) {
         HabitDetailResponseDto dto = new HabitDetailResponseDto();
+        dto.habitName = habit.getHabitName();
         dto.progress = habit.getProgress();
         dto.achievementRates = AchievementRateDto.fromEntity(habit);
-        dto.isTodayChecked = dto.hasCheckToday(habit.getHabitRecords()) ? true : false;
+        dto.isTodayChecked = isTodayChecked;
+        dto.inspireDay = inspireDay;
         return dto;
     }
 
-    /**
-     * 오늘 기록을 추가했는지 여부를 판단
-     */
-    private boolean hasCheckToday(List<HabitRecord> habitRecords) {
-        LocalDateTime time = LocalDateTime.now();
-        for (HabitRecord habitRecord : habitRecords) {
-            if (time.getDayOfYear() == habitRecord.getCreatedAt().getDayOfYear()) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

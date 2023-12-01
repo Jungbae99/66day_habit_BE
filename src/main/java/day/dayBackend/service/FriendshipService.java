@@ -9,6 +9,7 @@ import day.dayBackend.exception.NotFoundException;
 import day.dayBackend.repository.FriendshipRepository;
 import day.dayBackend.repository.HabitRepository;
 import day.dayBackend.repository.MemberRepository;
+import day.dayBackend.repository.custom.MemberRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 public class FriendshipService {
 
     private final MemberRepository memberRepository;
+    private final MemberRepositoryImpl memberRepositoryImpl;
     private final FriendshipRepository friendshipRepository;
     private final HabitRepository habitRepository;
 
@@ -68,20 +70,44 @@ public class FriendshipService {
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
 
         Optional<List<Habit>> friendHabitList;
+        boolean friendCheck = false;
 
         if (friendshipRepository.findByFollowerIdAndFollowingIdAndDeletedAtNull(memberId, friendId).isPresent()) {
             friendHabitList = habitRepository.findHabitNotPrivate(friendId);
+            // 친구일 때 true;
+            friendCheck = true;
         } else {
             friendHabitList = habitRepository.findPublicHabits(friendId);
         }
 
-        if (friendshipRepository.findByFollowerIdAndFollowingIdAndDeletedAtNull(memberId, friendId).isPresent()) {
-            return FriendDetailResponseDto.fromFriend(friend, friendHabitList.get(), 1);
-        }
-
-        return FriendDetailResponseDto.fromFriend(friend, friendHabitList.get(), 0);
+        return FriendDetailResponseDto.fromFriend(friend, friendHabitList.get(), friendCheck);
     }
 
+    /**
+     * 친구 검색
+     */
+    public FriendDetailResponseDto getFriendDetailBySearch(Long memberId, String search) {
+        Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
+                .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
+
+        Member friend = memberRepositoryImpl.findBySearchAndDeletedAtNull(search)
+                .orElseThrow(() -> new NotFoundException("해당하는 회원을 찾을 수 없습니다."));;
+
+        Optional<List<Habit>> friendHabitList;
+
+        boolean friendCheck = false;
+        // 친구일 때
+        if (friendshipRepository.findByFollowerIdAndFollowingIdAndDeletedAtNull(memberId, friend.getId()).isPresent()) {
+            friendHabitList = habitRepository.findHabitNotPrivate(friend.getId());
+            friendCheck = true;
+        // 친구가 아닐 때
+        } else {
+            friendHabitList = habitRepository.findPublicHabits(friend.getId());
+        }
+
+        return FriendDetailResponseDto.fromFriend(friend, friendHabitList.get(), friendCheck);
+    }
+    
     /**
      * 내가 팔로우하는 친구 조회
      */
@@ -98,15 +124,15 @@ public class FriendshipService {
      * 친구 삭제
      */
     @Transactional
-    public Long deleteFriend(Long memberId, Long followId) {
+    public Long deleteFriend(Long memberId, Long friendId) {
 
-        if (memberId.equals(followId)) {
+        if (memberId.equals(friendId)) {
             throw new IllegalArgumentException("자신을 팔로우 할 수 없습니다.");
         }
         memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
 
-        Friendship friendship = friendshipRepository.findFriendshipByFollowingIdAndDeletedAtNull(followId)
+        Friendship friendship = friendshipRepository.findFriendshipByFollowingIdAndDeletedAtNull(friendId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 친구입니다."));
 
         friendship.delete();
