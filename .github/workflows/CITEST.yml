@@ -30,8 +30,8 @@ jobs:
 
     - name: Create Python Files
       run: |
-        echo "${{ secrets.HabitCrawling }}" > ./resources/python/HabitCrawling.py
-        echo "${{ secrets.QuoteCrawling }}" > ./resources/python/QuoteCrawling.py
+        echo "${{ secrets.HABITCRAWLING }}" > ./resources/python/HabitCrawling.py
+        echo "${{ secrets.QOUTECRAWLING }}" > ./resources/python/QuoteCrawling.py
         cat ./resources/python/HabitCrawling.py
         cat ./resources/python/QuoteCrawling.py
 
