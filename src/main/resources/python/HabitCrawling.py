@@ -16,7 +16,7 @@ db_config = {
     'host': cfg['spring']['datasource']['url'].split('//')[1].split(':')[0],
     'user': cfg['spring']['datasource']['username'],
     'password': cfg['spring']['datasource']['password'],
-    'database': cfg['spring']['datasource']['url'].split('/')[-1].split('?')[0],
+    'database': 'habitdb',
     'charset': 'utf8mb4'
 }
 
