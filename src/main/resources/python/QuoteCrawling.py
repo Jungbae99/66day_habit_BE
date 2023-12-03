@@ -4,7 +4,7 @@ import pymysql
 import yaml
 
 # application.yml 파일의 경로 지정
-yml_path = 'src/main/resources/application.yml'
+yml_path = '/app/src/main/resources/application.yml'
 
 # application.yml 파일 읽어오기
 with open(yml_path, 'r') as ymlfile:
