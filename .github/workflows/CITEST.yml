@@ -28,13 +28,6 @@ jobs:
     - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.yml
     - run: cat ./src/main/resources/application.yml
 
-    - name: Create Python Files
-      run: |
-        echo "${{ secrets.HABITCRAWLING }}" > ./resources/python/HabitCrawling.py
-        echo "${{ secrets.QOUTECRAWLING }}" > ./resources/python/QuoteCrawling.py
-        cat ./resources/python/HabitCrawling.py
-        cat ./resources/python/QuoteCrawling.py
-
     - name: Run chmod to make gradlew executable
       run: chmod +x ./gradlew
 
