@@ -83,6 +83,9 @@ public class SecurityConfig {
                 
                 // 랜덤 조회
                 .requestMatchers(HttpMethod.GET, "/v1/recommend/random/**").permitAll()
+
+                // 헬스 체크
+                .requestMatchers(HttpMethod.GET, "/healthcheck").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
