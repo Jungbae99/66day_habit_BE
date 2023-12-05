@@ -169,11 +169,11 @@ public class TokenProvider implements InitializingBean {
      */
     public ResponseCookie getRefreshTokenCookie(Authentication authentication) {
         String refreshToken = getRefreshToken(authentication);
-        return generateCookie("jwtCookie", refreshToken, "/", true, "Lax", refreshTokenValidityTime);
+        return generateCookie("jwtCookie", refreshToken, "/", true, "None", refreshTokenValidityTime);
     }
 
     public ResponseCookie setRefreshTokenCookie(String refreshToken) {
-        return generateCookie("jwtCookie", refreshToken, "/", true, "Lax", 0);
+        return generateCookie("jwtCookie", refreshToken, "/", true, "None", 0);
     }
 
 
