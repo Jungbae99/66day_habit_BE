@@ -62,8 +62,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
 
                 .requestMatchers(HttpMethod.GET, "/favicon.ico").permitAll()
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console")).permitAll()
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
+//                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console")).permitAll()
+//                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
 
                 // 채팅
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/ws/**")).permitAll()
