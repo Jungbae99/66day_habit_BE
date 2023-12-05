@@ -58,7 +58,7 @@ if response.status_code == 200:
             wise_saying = data['wise_saying']
             great_person = data['great_person']
 
-            insert_query = "INSERT INTO Recommended_Quote (wise_saying, great_person) VALUES (%s, %s)"
+            insert_query = "INSERT INTO recommended_quote (wise_saying, great_person) VALUES (%s, %s)"
             cursor.execute(insert_query, (wise_saying, great_person))
 
         db_connection.commit()
