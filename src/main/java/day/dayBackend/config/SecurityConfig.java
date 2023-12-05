@@ -84,6 +84,10 @@ public class SecurityConfig {
                 // 랜덤 조회
                 .requestMatchers(HttpMethod.GET, "/v1/recommend/random/**").permitAll()
 
+                // 이메일 전송
+                .requestMatchers(HttpMethod.PUT, "/v1/member/certification").permitAll()
+                .requestMatchers(HttpMethod.POST, "/v1/member/certification").permitAll()
+
                 // 헬스 체크
                 .requestMatchers(HttpMethod.GET, "/healthcheck").permitAll()
                 .anyRequest().authenticated()

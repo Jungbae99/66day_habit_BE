@@ -68,6 +68,9 @@ dependencies {
 	implementation("software.amazon.awssdk:s3:2.17.27")
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+	// gmail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 	// querydsl
 	def queryDslVersion = '5.0.0'
 	implementation("com.querydsl:querydsl-core:${queryDslVersion}")
