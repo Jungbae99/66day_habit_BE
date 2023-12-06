@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Map;
 
-@CrossOrigin(origins = "https://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
 @Validated
 @RestController
 @RequiredArgsConstructor
@@ -40,28 +39,6 @@ public class MemberController {
         return CommonResponseDto.<Map<String, Long>>builder()
                 .data(Map.of("memberId", signInService.directJoin(dto)))
                 .build();
-    }
-
-    /**
-     * 메일 코드 검증
-     */
-    @PutMapping("/certification")
-    public CommonResponseDto verifyCertificationEmailV1(
-            @RequestParam(value = "certCode") String certCode,
-            @RequestParam(value = "email") @Valid @Email(message = "{validation.Pattern.email}") String email
-    ) {
-        signInService.verifyCertificationEmail(certCode, email);
-        return CommonResponseDto.builder().build(); // TODO: 리턴값 어떻게 할지 생각
-    }
-
-    /**
-     * 인증 이메일 발송
-     */
-    @PostMapping("/certification")
-    public CommonResponseDto sendCertificationEmailV1(
-            @RequestParam(value = "email") @Valid @Email(message = "{validation.Email}") String email) {
-        signInService.resendCertMail(email);
-        return CommonResponseDto.builder().build();
     }
 
 

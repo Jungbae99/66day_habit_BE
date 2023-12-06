@@ -1,5 +1,6 @@
 package day.dayBackend.repository;
 
+import day.dayBackend.domain.Certified;
 import day.dayBackend.domain.EmailCertification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,4 +18,7 @@ public interface EmailCertificationRepository extends JpaRepository<EmailCertifi
             "limit 1")
     Optional<EmailCertification> findByCertCodeAndEmail(@Param("certCode")String certCode,
                                                         @Param("email")String email);
+
+    Optional<EmailCertification> findByEmailAndCertifiedAndDeletedAtNull(String email, Certified certified);
+
 }
