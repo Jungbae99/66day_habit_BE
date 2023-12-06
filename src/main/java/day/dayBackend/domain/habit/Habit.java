@@ -8,12 +8,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@Where(clause = "deleted_at is null")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class Habit extends BaseAuditingListener {
 
@@ -42,12 +44,12 @@ public class Habit extends BaseAuditingListener {
     @Column(name = "tag_name")
     private List<String> habitTags = new ArrayList<>();
 
-    private int progress;
+    private int progress; // 1 ~ 66 까지 얼마나 진행했는지에 대한 데이터
 
     @OneToMany(mappedBy = "habit", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HabitRecord> habitRecords = new ArrayList<>();
 
-    @OneToMany(mappedBy = "habit")
+    @OneToMany(mappedBy = "habit", orphanRemoval = true)
     private List<HabitLikes> likes = new ArrayList<>();
 
     @Builder
@@ -71,7 +73,6 @@ public class Habit extends BaseAuditingListener {
         this.fontColor = FontColor.valueOf(fontColor);
     }
 
-
     public void updateBackgroundColor(String backgroundColor) {
         this.backgroundColor = BackgroundColor.valueOf(backgroundColor);
     }
@@ -80,10 +81,14 @@ public class Habit extends BaseAuditingListener {
         this.habitVisibility = HabitVisibility.valueOf(visibility);
     }
 
-
     public void updateHabitTag(List<String> habitTags) {
         this.habitTags.clear();
         this.habitTags.addAll(habitTags);
+    }
+
+    public void updateProgress() {
+        int totalRecords = habitRecords.size();
+        this.progress = (totalRecords * 100) / 66;
     }
 
     public void delete() {

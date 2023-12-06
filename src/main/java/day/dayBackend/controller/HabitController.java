@@ -5,11 +5,12 @@ import day.dayBackend.dto.request.habit.HabitCreateRequestDto;
 import day.dayBackend.dto.request.habit.HabitUpdateRequestDto;
 import day.dayBackend.dto.response.CommonResponseDto;
 
+import day.dayBackend.dto.response.habit.HabitDetailResponseDto;
 import day.dayBackend.dto.response.habit.HabitListResponseDto;
 import day.dayBackend.dto.response.habit.HabitUpdateResponseDto;
 import day.dayBackend.exception.NotAuthenticatedException;
+import day.dayBackend.search.HabitSearch;
 import day.dayBackend.service.HabitService;
-import day.dayBackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,19 +19,45 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@CrossOrigin(origins = "https://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/habit")
 public class HabitController {
 
     private final HabitService habitService;
-    private final MemberService memberService;
+
+    /**
+     * 습관 검색 (정렬조건 앞에 -를 붙이면 내림차순, 붙이면 오름차순)
+     */
+    @GetMapping("")
+    public CommonResponseDto<HabitListResponseDto> getHabitListV1(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                                  @RequestParam(value = "limit", required = false, defaultValue = "100") int size,
+                                                                  @RequestParam(value = "search1", required = false) String keyword1,
+                                                                  @RequestParam(value = "search2", required = false) String keyword2,
+                                                                  @RequestParam(value = "sort", required = false) String sort
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        HabitSearch search = HabitSearch.builder().keyword1(keyword1).keyword2(keyword2).sort(sort).build();
+        return CommonResponseDto.<HabitListResponseDto>builder()
+                .data(habitService.getHabitList(pageable, search))
+                .build();
+    }
+
+    /**
+     * 습관 더 보기 정보 조회
+     */
+    @GetMapping("/detail")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    public CommonResponseDto getHabitDetailV1(@RequestParam(value = "habitId") Long habitId) {
+        return CommonResponseDto.<HabitDetailResponseDto>builder()
+                .data(habitService.getHabitDetail(habitId))
+                .build();
+    }
 
     /**
      * 새로운 습관 조회
      */
-    @GetMapping("new")
+    @GetMapping("/new")
     public CommonResponseDto getNewestHabitV1(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                               @RequestParam(value = "limit", required = false, defaultValue = "100") int size
     ) {
@@ -43,7 +70,7 @@ public class HabitController {
     /**
      * 완료한 습관 조회
      */
-    @GetMapping("done")
+    @GetMapping("/done")
     public CommonResponseDto getDoneHabitV1(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                             @RequestParam(value = "limit", required = false, defaultValue = "100") int size
     ) {

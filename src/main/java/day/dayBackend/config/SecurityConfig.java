@@ -62,9 +62,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
 
                 .requestMatchers(HttpMethod.GET, "/favicon.ico").permitAll()
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console")).permitAll()
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
+//                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console")).permitAll()
+//                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
 
+                // 채팅
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/ws/**")).permitAll()
+                
                 // 로그인 및 토큰 refresh
                 .requestMatchers(HttpMethod.POST, "/v1/auth/signIn/direct").permitAll()
                 .requestMatchers(HttpMethod.POST, "/v1/auth/refresh").permitAll()
@@ -73,9 +76,20 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/v1/member/direct").permitAll()
 
                 // 이메일 중복확인
-                .requestMatchers(HttpMethod.GET, "/v1/member/email").permitAll()
+                .requestMatchers(HttpMethod.GET, "/v1/member/email/**").permitAll()
 
+                // 습관 조회
                 .requestMatchers(HttpMethod.GET, "/v1/habit/**").permitAll()
+                
+                // 랜덤 조회
+                .requestMatchers(HttpMethod.GET, "/v1/recommend/random/**").permitAll()
+
+                // 이메일 전송
+                .requestMatchers(HttpMethod.PUT, "/v1/email/certification").permitAll()
+                .requestMatchers(HttpMethod.POST, "/v1/email/certification").permitAll()
+
+                // 헬스 체크
+                .requestMatchers(HttpMethod.GET, "/healthcheck").permitAll()
                 .anyRequest().authenticated()
 
                 .and()

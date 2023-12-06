@@ -20,11 +20,11 @@ public class CloudStorageService {
 
     private final AmazonS3 amazonS3;
 
-    @Value("${cloud.aws.s3.bucket}")
+    @Value("${spring.cloud.aws.s3.bucket}")
     private String bucketName;
 
     @Autowired
-    public CloudStorageService(AmazonS3 amazonS3, @Value("${cloud.aws.s3.bucket}") String bucketName) {
+    public CloudStorageService(AmazonS3 amazonS3, @Value("${spring.cloud.aws.s3.bucket}") String bucketName) {
         this.amazonS3 = amazonS3;
         this.bucketName = bucketName;
     }

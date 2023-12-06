@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Map;
 
-@CrossOrigin(origins = "https://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
 @Validated
 @RestController
 @RequiredArgsConstructor
@@ -41,6 +40,7 @@ public class MemberController {
                 .data(Map.of("memberId", signInService.directJoin(dto)))
                 .build();
     }
+
 
     /**
      * Email 중복체크
@@ -77,17 +77,6 @@ public class MemberController {
     }
 
     /**
-     * 친구의 회원정보 조회
-     */
-    @GetMapping("/detail/friend")
-    @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public CommonResponseDto<MemberDetailResponseDto> getMyDetailInfoV1(@RequestParam(name = "memberId") Long memberId) {
-        return CommonResponseDto.<MemberDetailResponseDto>builder()
-                .data(memberService.getMemberDetailById(memberId))
-                .build();
-    }
-
-    /**
      * 회원정보 수정
      */
     @PatchMapping("")
@@ -110,6 +99,18 @@ public class MemberController {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
         return CommonResponseDto.<EmailUpdateResponseDto>builder()
                 .data(memberService.updateEmail(memberId, dto))
+                .build();
+    }
+
+    /**
+     * 회원 PK조회
+     */
+    @GetMapping("/id")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    public CommonResponseDto<Map<String, Long>> getMemberIdV1() {
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID ID"));
+        return CommonResponseDto.<Map<String, Long>>builder()
+                .data(Map.of("memberId", memberId))
                 .build();
     }
 

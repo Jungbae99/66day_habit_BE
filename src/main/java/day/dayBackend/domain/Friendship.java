@@ -17,12 +17,12 @@ public class Friendship extends BaseAuditingListener {
     private Long id;
 
     // member 가 Follow 하고 있는 사람들
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "following_id")
     private Member following;
 
     // member 를 Following 하고 있는 사람들
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "follower_id")
     private Member follower;
 

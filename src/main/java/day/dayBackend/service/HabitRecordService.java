@@ -10,6 +10,7 @@ import day.dayBackend.exception.NotFoundException;
 import day.dayBackend.repository.HabitRecordRepository;
 import day.dayBackend.repository.HabitRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,9 +39,13 @@ public class HabitRecordService {
      * 습관 기록 생성
      */
     @Transactional
-    public Integer createHabitRecord(Long habitId, HabitRecordRequestDto dto) {
+    public Integer createHabitRecord(Long memberId, Long habitId, HabitRecordRequestDto dto) {
         Habit habit = habitRepository.findByIdAndDeletedAtNull(habitId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 습관을 찾을 수 없습니다."));
+
+        if (!habit.getMember().getId().equals(memberId)) {
+            throw new AccessDeniedException("습관 기록을 생성할 권한이 없습니다.");
+        }
 
         if (!recordCheck(habitId, dto.getDayNumber())) {
             throw new IllegalArgumentException("습관 기록 생성이 허용되지 않습니다.");
@@ -57,7 +62,7 @@ public class HabitRecordService {
                 .build();
 
         habitRecordRepository.save(habitRecord);
-
+        habit.updateProgress();
         return habitRecord.getDayNumber();
     }
 
@@ -65,7 +70,15 @@ public class HabitRecordService {
      * 습관 기록 수정
      */
     @Transactional
-    public HabitRecordUpdateResponseDto updateRecordV1(Long habitId, Integer dayNumber, HabitRecordUpdateRequestDto dto) {
+    public HabitRecordUpdateResponseDto updateRecordV1(Long memberId, Long habitId, Integer dayNumber, HabitRecordUpdateRequestDto dto) {
+
+        Habit habit = habitRepository.findByIdAndDeletedAtNull(habitId)
+                .orElseThrow(() -> new NotFoundException("id에 해당하는 습관을 찾을 수 없습니다."));
+
+        if (!habit.getMember().getId().equals(memberId)) {
+            throw new AccessDeniedException("습관 기록을 생성할 권한이 없습니다.");
+        }
+
         HabitRecord habitRecord = habitRecordRepository.findByHabitId(habitId, dayNumber)
                 .orElseThrow(() -> new NotFoundException("해당하는 습관 기록이 존재하지 않습니다."));
 
@@ -81,6 +94,11 @@ public class HabitRecordService {
         HabitRecord habitRecord = habitRecordRepository.findByHabitId(habitId, dayNumber)
                 .orElseThrow(() -> new NotFoundException("해당하는 습관 기록이 존재하지 않습니다."));
 
+        Habit habit = habitRepository.findByIdAndDeletedAtNull(habitId)
+                .orElseThrow(() -> new NotFoundException("해당하는 습관이 존재하지 않습니다."));
+
+        habit.getHabitRecords().remove(habitRecord);
+        habit.updateProgress();
         habitRecordRepository.delete(habitRecord);
         return dayNumber;
     }

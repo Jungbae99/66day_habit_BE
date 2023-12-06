@@ -70,6 +70,15 @@ public class Member extends BaseAuditingListener {
         this.certified = Certified.CERTIFIED;
     }
 
+    public void updateCertified() {
+        if (this.certified == Certified.NOT_CERTIFIED) {
+            this.certified = Certified.CERTIFIED;
+        } else {
+            throw new IllegalArgumentException("ALREADY CERTIFIED");
+        }
+
+    }
+
     public void updateEmail(String email) {
         this.email = email;
     }
