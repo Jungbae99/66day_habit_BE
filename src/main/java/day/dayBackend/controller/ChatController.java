@@ -20,7 +20,6 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/chat")
-@CrossOrigin(origins = "https://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
 public class ChatController {
 
     private final ChatRoomService chatService;
