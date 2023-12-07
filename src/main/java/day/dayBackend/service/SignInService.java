@@ -54,7 +54,7 @@ public class SignInService {
         MemberAuthority memberAuthority = MemberAuthority.createMemberAuthority(
                 member, authorityRepository.findByAuthorityName("ROLE_USER").orElseThrow(NotFoundException::new));
 
-        emailCertificationRepository.findByEmailAndCertifiedAndDeletedAtNull(dto.getEmail(), Certified.CERTIFIED)
+        emailCertificationRepository.findByEmailAndCertified(dto.getEmail(), Certified.CERTIFIED)
                 .orElseThrow(() -> new IllegalArgumentException("인증되지 않은 이메일입니다."));
 
         memberAuthorityRepository.save(memberAuthority);

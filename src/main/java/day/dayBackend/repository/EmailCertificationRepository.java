@@ -19,6 +19,11 @@ public interface EmailCertificationRepository extends JpaRepository<EmailCertifi
     Optional<EmailCertification> findByCertCodeAndEmail(@Param("certCode")String certCode,
                                                         @Param("email")String email);
 
-    Optional<EmailCertification> findByEmailAndCertifiedAndDeletedAtNull(String email, Certified certified);
+    @Query("select e from EmailCertification  e " +
+            "where e.email = :email " +
+            "and e.certified = :certified " +
+            "order by e.id desc " +
+            "limit 1")
+    Optional<EmailCertification> findByEmailAndCertified(@Param("email") String email, @Param("certified") Certified certified);
 
 }
