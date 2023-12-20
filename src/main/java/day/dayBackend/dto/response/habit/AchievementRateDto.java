@@ -16,13 +16,13 @@ public class AchievementRateDto {
     public static AchievementRateDto fromEntity(Habit habit) {
         AchievementRateDto dto = new AchievementRateDto();
         List<HabitRecord> habitRecords = habit.getHabitRecords();
-        int achievement30 = 0;
+        int achievement20 = 0;
         int achievement50 = 0;
         int achievement100 = 0;
 
         for (HabitRecord habitRecord : habitRecords) {
-            if (habitRecord.getAchievementRate() == 30) {
-                achievement30++;
+            if (habitRecord.getAchievementRate() == 20) {
+                achievement20++;
             } else if (habitRecord.getAchievementRate() == 50) {
                 achievement50++;
             } else {
@@ -30,7 +30,7 @@ public class AchievementRateDto {
             }
         }
         if (habitRecords.size() != 0) {
-            dto.thirty = (int)((achievement30 / (double)habitRecords.size()) * 100);
+            dto.thirty = (int)((achievement20 / (double)habitRecords.size()) * 100);
             dto.fifty = (int)((achievement50 / (double)habitRecords.size()) * 100);
             dto.hundred = (int)((achievement100 / (double)habitRecords.size()) * 100);
         }

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "https://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/likes")

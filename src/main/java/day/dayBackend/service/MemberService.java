@@ -1,5 +1,6 @@
 package day.dayBackend.service;
 
+import day.dayBackend.domain.EmailCertification;
 import day.dayBackend.domain.Member;
 import day.dayBackend.domain.Upload;
 import day.dayBackend.domain.authority.MemberAuthority;
@@ -9,6 +10,7 @@ import day.dayBackend.dto.request.member.MemberUpdateRequestDto;
 import day.dayBackend.dto.request.member.PasswordUpdateRequestDto;
 import day.dayBackend.dto.response.member.*;
 import day.dayBackend.exception.NotFoundException;
+import day.dayBackend.repository.EmailCertificationRepository;
 import day.dayBackend.repository.MemberAuthorityRepository;
 import day.dayBackend.repository.MemberRepository;
 import day.dayBackend.repository.UploadRepository;
@@ -33,6 +35,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final UploadRepository uploadRepository;
     private final MemberAuthorityRepository memberAuthorityRepository;
+    private final EmailCertificationRepository emailCertificationRepository;
 
     /**
      * 메인페이지 회원정보 조회

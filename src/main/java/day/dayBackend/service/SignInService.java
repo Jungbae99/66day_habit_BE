@@ -54,8 +54,10 @@ public class SignInService {
         MemberAuthority memberAuthority = MemberAuthority.createMemberAuthority(
                 member, authorityRepository.findByAuthorityName("ROLE_USER").orElseThrow(NotFoundException::new));
 
+        emailCertificationRepository.findByEmailAndCertified(dto.getEmail(), Certified.CERTIFIED)
+                .orElseThrow(() -> new IllegalArgumentException("인증되지 않은 이메일입니다."));
+
         memberAuthorityRepository.save(memberAuthority);
-        sendCertificationEmail(member);
         memberRepository.save(member);
         return member.getId();
     }
@@ -63,12 +65,12 @@ public class SignInService {
     /**
      * 메일 발송
      */
-    private void sendCertificationEmail(Member member) {
+    public void sendCertificationEmail(String email) {
         // 메일 발송
         try {
-            EmailCertification emailCertification = EmailCertification.createEmailCertification(member);
+            EmailCertification emailCertification = EmailCertification.createEmailCertification(email);
             emailCertificationRepository.save(emailCertification);
-            emailService.sendEmail(member.getEmail(), emailCertification.getCertCode());
+            emailService.sendEmail(email, emailCertification.getCertCode());
 
         } catch (MessagingException e) {
             // TODO: 에러 처리 로직 추가
@@ -82,35 +84,14 @@ public class SignInService {
     public void verifyCertificationEmail(String certCode, String email) {
         EmailCertification latestCertification =
                 emailCertificationRepository.findByCertCodeAndEmail(certCode, email)
-                        .orElseThrow(() -> new NotFoundException("인증 메일 정보를 찾을 수 없습니다."));
-
-        Member member = latestCertification.getMember();
-
-        if (member.getCertified() == Certified.CERTIFIED) {
-            throw new IllegalArgumentException("이미 인증된 회원입니다.");
-        }
+                        .orElseThrow(() -> new NotFoundException("인증 정보가 일치하지 않습니다."));
 
         if (latestCertification.isExpired()) {
             throw new IllegalArgumentException("인증코드가 만료되었습니다.");
         }
 
-        member.updateCertified();
-        MemberAuthority memberAuthority = MemberAuthority.createMemberAuthority(
-                member, authorityRepository.findByAuthorityName("ROLE_USER").orElseThrow(NotFoundException::new));
-
-        memberAuthorityRepository.save(memberAuthority);
+        latestCertification.updateCertified();
         latestCertification.delete();
-    }
-
-    /**
-     * 인증 메일 재발송
-     */
-    public void resendCertMail(String email) {
-        Member member = memberRepository.findByEmailAndDeletedAtNull(email).orElseThrow(NotFoundException::new);
-        if (member.getCertified() == Certified.CERTIFIED) {
-            throw new IllegalArgumentException("ALREADY_CERTIFIED");
-        }
-        sendCertificationEmail(member);
     }
 
     /**
@@ -119,8 +100,8 @@ public class SignInService {
     private void validateUsernameDuplication(String username) throws DuplicateKeyException {
         memberRepository.findByUsernameAndDeletedAtNull(username)
                 .ifPresent(member -> {
-                            throw new DuplicateKeyException("이미 같은 이름이 존재합니다.");
-                        });
+                    throw new DuplicateKeyException("이미 같은 이름이 존재합니다.");
+                });
     }
 
     private void validateEmailDuplication(String email) throws DuplicateKeyException {

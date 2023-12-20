@@ -20,24 +20,22 @@ public class EmailCertification extends BaseAuditingListener {
     @Column(name = "email_certification_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
     @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String certCode;
 
-    private EmailCertification(Member member) {
-        this.member = member;
-        this.email = member.getEmail();
+    @Enumerated(EnumType.STRING)
+    private Certified certified;
+
+    private EmailCertification(String email) {
+        this.email = email;
         this.certCode = createCertCode();
     }
 
-    public static EmailCertification createEmailCertification(Member member) {
-        return new EmailCertification(member);
+    public static EmailCertification createEmailCertification(String email) {
+        return new EmailCertification(email);
     }
 
     public boolean isExpired() {
@@ -57,4 +55,7 @@ public class EmailCertification extends BaseAuditingListener {
         return String.valueOf(random.nextInt(max - min + 1) + min);
     }
 
+    public void updateCertified() {
+        this.certified = Certified.CERTIFIED;
+    }
 }

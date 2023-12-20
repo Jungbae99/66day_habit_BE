@@ -9,11 +9,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "https://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/auth")

@@ -87,6 +87,9 @@ public class FriendshipService {
      * 친구 검색
      */
     public FriendDetailResponseDto getFriendDetailBySearch(Long memberId, String search) {
+
+        System.out.println("search = " + search);
+
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
 

@@ -47,7 +47,6 @@ public class QuoteRecommendService {
     }
 
     @Transactional
-    @Scheduled(cron = "0 0 1 */3 * ?", zone = "Asia/Seoul")
     public void executeHabitCrawlerScheduled() {
         executeQuoteCrawler();
     }

@@ -13,6 +13,7 @@ import day.dayBackend.service.MemberService;
 import day.dayBackend.service.SignInService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -22,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Map;
 
-@CrossOrigin(origins = "https://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
 @Validated
 @RestController
 @RequiredArgsConstructor
@@ -42,28 +42,6 @@ public class MemberController {
                 .build();
     }
 
-    /**
-     * 메일 코드 검증
-     */
-    @PutMapping("/certification")
-    public CommonResponseDto verifyCertificationEmailV1(
-            @RequestParam(value = "certCode") String certCode,
-            @RequestParam(value = "email") @Valid @Email(message = "{validation.Pattern.email}") String email
-    ) {
-        signInService.verifyCertificationEmail(certCode, email);
-        return CommonResponseDto.builder().build(); // TODO: 리턴값 어떻게 할지 생각
-    }
-
-    /**
-     * 인증 이메일 발송
-     */
-    @PostMapping("/certification")
-    public CommonResponseDto sendCertificationEmailV1(
-            @RequestParam(value = "email") @Valid @Email(message = "{validation.Email}") String email) {
-        signInService.resendCertMail(email);
-        return CommonResponseDto.builder().build();
-    }
-
 
     /**
      * Email 중복체크
@@ -71,6 +49,15 @@ public class MemberController {
     @GetMapping("/email/check")
     public CommonResponseDto emailDuplicationCheckV1(@Valid @RequestParam(value = "email") @Email(message = "{validation.Pattern.email}") String email) {
         signInService.emailDuplicationCheck(email);
+        return CommonResponseDto.builder().build();
+    }
+
+    /**
+     * Username 중복체크
+     */
+    @GetMapping("/username/check")
+    public CommonResponseDto usernameDuplicationCheckV1(@Valid @RequestParam(value = "username") @NotNull(message = "{validation.NotNull}") String username) {
+        signInService.usernameDuplicationCheck(username);
         return CommonResponseDto.builder().build();
     }
 
