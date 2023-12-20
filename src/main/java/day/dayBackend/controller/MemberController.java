@@ -13,6 +13,7 @@ import day.dayBackend.service.MemberService;
 import day.dayBackend.service.SignInService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -48,6 +49,15 @@ public class MemberController {
     @GetMapping("/email/check")
     public CommonResponseDto emailDuplicationCheckV1(@Valid @RequestParam(value = "email") @Email(message = "{validation.Pattern.email}") String email) {
         signInService.emailDuplicationCheck(email);
+        return CommonResponseDto.builder().build();
+    }
+
+    /**
+     * Username 중복체크
+     */
+    @GetMapping("/username/check")
+    public CommonResponseDto usernameDuplicationCheckV1(@Valid @RequestParam(value = "username") @NotNull(message = "{validation.NotNull}") String username) {
+        signInService.usernameDuplicationCheck(username);
         return CommonResponseDto.builder().build();
     }
 
